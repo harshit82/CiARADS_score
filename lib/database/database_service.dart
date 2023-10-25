@@ -1,3 +1,4 @@
+import 'package:calposcopy/constants.dart';
 import 'package:calposcopy/database/patient_db.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
@@ -13,10 +14,10 @@ class DatabaseService {
   }
 
   Future<String> get fullPath async {
-    const String name = 'patient.db';
+    const String databaseName = tableName;
     final String path = await sql.getDatabasesPath();
     //return join(path, name);
-    return "$path$name";
+    return "$path$databaseName";
   }
 
   Future<sql.Database> _initialize() async {

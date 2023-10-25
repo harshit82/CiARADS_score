@@ -1,4 +1,8 @@
 import 'package:calposcopy/camera.dart';
+import 'package:calposcopy/views/diagnostic_data.dart';
+import 'package:calposcopy/views/enter_patient_details.dart';
+import 'package:calposcopy/views/home.dart';
+import 'package:calposcopy/views/show_patient_details.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +25,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: CameraApp(cameras: _cameras),
+      home: const Home(),
     );
   }
 }

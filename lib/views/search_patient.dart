@@ -20,6 +20,7 @@ class _SearchPatientState extends State<SearchPatient> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text("Search Patient"),
       ),
       body: Column(children: [
