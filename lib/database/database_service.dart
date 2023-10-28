@@ -1,9 +1,16 @@
-import 'package:calposcopy/constants.dart';
-import 'package:calposcopy/database/patient_db.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:CiARADS/database/database_export.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
 class DatabaseService {
-  sql.Database? _database;
+  DatabaseService._privateConstructor();
+  static final DatabaseService _instance =
+      DatabaseService._privateConstructor();
+  static sql.Database? _database;
 
   Future<sql.Database> get database async {
     if (_database != null) {
@@ -13,11 +20,14 @@ class DatabaseService {
     return _database!;
   }
 
+  factory DatabaseService() {
+    return _instance;
+  }
+
   Future<String> get fullPath async {
-    const String databaseName = tableName;
-    final String path = await sql.getDatabasesPath();
-    //return join(path, name);
-    return "$path$databaseName";
+    final Directory docDirectory = await getApplicationDocumentsDirectory();
+    String path = join(docDirectory.path, databaseName);
+    return path;
   }
 
   Future<sql.Database> _initialize() async {
@@ -33,5 +43,29 @@ class DatabaseService {
 
   Future<void> deleteDB(String databasePath) async {
     await sql.deleteDatabase(databasePath);
+  }
+
+  Future<void> closeDB(String databasePath) async {
+    sql.Database db = await sql.openDatabase(databasePath);
+    await db.close();
+  }
+
+  Future<void> saveImage(String base64Image) async {
+    final path = await fullPath;
+    sql.Database db = await sql.openDatabase(path);
+    await db.transaction((txn) async {
+      await txn.rawInsert('INSERT INTO $tableName VALUES (?)', [base64Image]);
+    });
+    closeDB(path);
+  }
+
+  Future<Uint8List> loadImage(String image) async {
+    final path = await fullPath;
+    sql.Database db = await sql.openDatabase(path);
+    List<Map<String, dynamic>> rows =
+        await db.rawQuery('SELECT $image FROM $tableName');
+    String base64Image = rows[0][image];
+    await db.close();
+    return base64Decode(base64Image);
   }
 }

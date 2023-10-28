@@ -1,8 +1,16 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
     "cSpell.words": [
+        "ARADS",
         "calposcopy",
+        "ciarads",
+        "cupertino",
         "Fluttertoast",
-        "Lugol"
+        "jipmer",
+        "Lato",
+        "Lugol",
+        "sqflite",
+        "syncfusion",
+        "Xfile"
     ]
 }

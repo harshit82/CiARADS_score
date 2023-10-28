@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
@@ -6,12 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class CameraApp extends StatefulWidget {
+  final String id;
+  final String test;
   final List<CameraDescription> cameras;
-  const CameraApp({super.key, required this.cameras});
+  const CameraApp({
+    Key? key,
+    required this.id,
+    required this.test,
+    required this.cameras,
+  }) : super(key: key);
 
   @override
   State<CameraApp> createState() => _CameraAppState();
@@ -100,13 +109,35 @@ class _CameraAppState extends State<CameraApp> {
     }
   }
 
+  static Future<String> getExternalDocumentPath() async {
+    // To check whether permission is given for this app or not.
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      // If not we will ask for permission first
+      await Permission.storage.request();
+    }
+    Directory _directory = Directory("");
+    if (Platform.isAndroid) {
+      // Redirects it to download folder in android
+      _directory = Directory("/storage/emulated/0/Download");
+    } else {
+      _directory = await getApplicationDocumentsDirectory();
+    }
+
+    final exPath = _directory.path;
+    if (kDebugMode) {
+      print("Saved Path: $exPath");
+    }
+    await Directory(exPath).create(recursive: true);
+    return exPath;
+  }
+
   /// {@captureImage} captures the image
   void captureImage() async {
     // using the path_provider plugin to get the application paths
-    final Directory appDir =
-        await path_provider.getApplicationSupportDirectory();
+    final String appDirPath = await getExternalDocumentPath();
     // saving the path in the required format
-    final String capturePath = '${appDir.path}/${DateTime.now()}.jpg';
+    //final String capturePath = '$appDirPath/${DateTime.now()}.jpg';
 
     if (controller.value.isTakingPicture) {
       return;
@@ -134,7 +165,7 @@ class _CameraAppState extends State<CameraApp> {
       }
 
       final String filePath =
-          '$capturePath/${DateTime.now().microsecondsSinceEpoch}.jpg';
+          '$appDirPath/${widget.id}_${widget.test}/${DateTime.now().day}/${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}.jpg';
 
       _capturedImage = File(capturedImage.path);
       _capturedImage!.renameSync(filePath);

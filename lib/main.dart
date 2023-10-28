@@ -1,16 +1,13 @@
-import 'package:calposcopy/camera.dart';
-import 'package:calposcopy/views/diagnostic_data.dart';
-import 'package:calposcopy/views/enter_patient_details.dart';
-import 'package:calposcopy/views/home.dart';
-import 'package:calposcopy/views/show_patient_details.dart';
+import 'package:CiARADS/camera.dart';
+import 'package:CiARADS/constants.dart';
+import 'package:CiARADS/routes.dart';
+import 'package:CiARADS/views/views_export.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-late List<CameraDescription> _cameras;
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  _cameras = await availableCameras();
+  cameras = await availableCameras();
   runApp(const MyApp());
 }
 
@@ -20,12 +17,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Calposcopy',
+      title: 'CiARADS',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Lato',
       ),
       debugShowCheckedModeBanner: false,
-      home: const Home(),
+      initialRoute: enterDiagnosticData,
+      routes: {
+        home: (context) => const Home(),
+        showPatientDetails: (context) => const ShowPatientDetails(),
+        camera: (context) => CameraApp(
+              cameras: cameras,
+              id: '',
+              test: '',
+            ),
+        enterPatientDetails: (context) => const EnterPatientDetails(),
+        enterDiagnosticData: (context) => const DiagnosticData(patientId: ''),
+      },
     );
   }
 }
