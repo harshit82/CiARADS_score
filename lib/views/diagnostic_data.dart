@@ -20,10 +20,9 @@ class DiagnosticData extends StatefulWidget {
 
 class _DiagnosticDataState extends State<DiagnosticData> {
   bool isLugolIodineFilled = false;
-  bool isNormalSalineFilled = false;
-  bool isGreenFilterFilled = false;
+  bool isNormalSalineFilled = true;
+  bool isGreenFilterFilled = true;
   bool isAceticAcidFilled = false;
-  bool areAllFilled = false;
 
   bool _checkForAllFilled() {
     if (isLugolIodineFilled == false ||
@@ -33,15 +32,14 @@ class _DiagnosticDataState extends State<DiagnosticData> {
     return true;
   }
 
-  // TODO: Make the buttons inactive when the values are not filled, see home for ref
-
-  int calculateScore(int marginAndSurfaceValue, int lesionSizeValue,
-      int aceticAcidValue, int vesselValue, int lugolIodineValue) {
-    return marginAndSurfaceValue +
-        lesionSizeValue +
-        aceticAcidValue +
-        vesselValue +
-        lugolIodineValue;
+  void _calculateScore() {
+    final score = (int.parse(marginAndSurfaceController.text) +
+            int.parse(lesionSizeController.text) +
+            int.parse(aceticAcidController.text) +
+            int.parse(vesselController.text) +
+            int.parse(lugolIodineController.text))
+        .toString();
+    totalScoreController.text = score;
   }
 
   late TextEditingController marginAndSurfaceController;
@@ -68,18 +66,20 @@ class _DiagnosticDataState extends State<DiagnosticData> {
     aceticAcidController = TextEditingController();
 
     lugolIodineController.addListener(() {
-      final isLugolIodineFilled = lugolIodineController.text.isNotEmpty;
+      final isLugolIodineFilled = lugolIodineController.text != 'NV';
       setState(() {
         this.isLugolIodineFilled = isLugolIodineFilled;
       });
     });
 
     aceticAcidController.addListener(() {
-      final isAceticAcidFilled = aceticAcidController.text.isNotEmpty;
+      final isAceticAcidFilled = aceticAcidController.text != 'NV';
       setState(() {
         this.isAceticAcidFilled = isAceticAcidFilled;
       });
     });
+
+    totalScoreController.addListener(_calculateScore);
   }
 
   @override
@@ -119,6 +119,9 @@ class _DiagnosticDataState extends State<DiagnosticData> {
 
   @override
   Widget build(BuildContext context) {
+    // patient id
+    String pid = widget.patientId;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -136,8 +139,8 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                     Row(
                       children: [
                         DropDownMenu(
-                          items: const ['0', '1', '2'],
-                          initialValue: '0',
+                          items: const ['NV', '0', '1', '2'],
+                          initialValue: 'NV',
                           label: 'Margin And Surface',
                           controller: marginAndSurfaceController,
                         ),
@@ -145,8 +148,8 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                           width: 10,
                         ),
                         DropDownMenu(
-                          items: const ['0', '1', '2'],
-                          initialValue: '0',
+                          items: const ['NV', '0', '1', '2'],
+                          initialValue: 'NV',
                           label: 'Vessel',
                           controller: vesselController,
                         ),
@@ -158,8 +161,8 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                     Row(
                       children: [
                         DropDownMenu(
-                          items: const ['0', '1', '2'],
-                          initialValue: '0',
+                          items: const ['NV', '0', '1', '2'],
+                          initialValue: 'NV',
                           label: 'Lesion Size',
                           controller: lesionSizeController,
                         ),
@@ -167,8 +170,8 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                           width: 10,
                         ),
                         DropDownMenu(
-                          items: const ['0', '1', '2'],
-                          initialValue: '0',
+                          items: const ['NV', '0', '1', '2'],
+                          initialValue: 'NV',
                           label: 'Acetic acid',
                           controller: aceticAcidController,
                         ),
@@ -180,8 +183,8 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                     Row(
                       children: [
                         DropDownMenu(
-                          items: const ['0', '1', '2'],
-                          initialValue: '0',
+                          items: const ['NV', '0', '1', '2'],
+                          initialValue: 'NV',
                           label: 'Lugol Iodine',
                           controller: lugolIodineController,
                         ),
@@ -189,24 +192,37 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                           width: 10,
                         ),
                         DropDownMenu(
-                          items: const ['Required', 'Not required'],
-                          initialValue: 'Not required',
+                          items: const ['NV', 'Required', 'Not required'],
+                          initialValue: 'NV',
                           label: 'Biopsy taken',
                           controller: biopsyTakenController,
                         ),
                       ],
                     ),
-
-                    // TODO: add a calculate score widget
-                    // Fix: type 'String' is not a subtype of type 'int' in type cast
-                    // Text(calculateScore(
-                    //         marginAndSurfaceController.text,
-                    //         lesionSizeController.text,
-                    //         aceticAcidController.text,
-                    //         vesselController.text,
-                    //         lugolIodineController.text)
-                    //     .toString()),
-
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Total Score: "),
+                        const SizedBox(height: 5),
+                        TextFormField(
+                          onChanged: (value) {
+                            setState(() {});
+                          },
+                          readOnly: true,
+                          enableInteractiveSelection: false,
+                          decoration: InputDecoration(
+                              hintText: "Tap to see score",
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              errorStyle:
+                                  const TextStyle(color: Colors.redAccent)),
+                          controller: totalScoreController,
+                        ),
+                      ],
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -237,7 +253,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) => CameraApp(
-                                                id: patientId,
+                                                id: pid,
                                                 test: lugolIodine,
                                                 cameras: cameras)));
                                   }
@@ -252,7 +268,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) => CameraApp(
-                                                id: patientId,
+                                                id: pid,
                                                 test: normalSaline,
                                                 cameras: cameras)));
                                   }
@@ -272,7 +288,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) => CameraApp(
-                                                id: patientId,
+                                                id: pid,
                                                 test: greenFilter,
                                                 cameras: cameras)));
                                   }
@@ -287,7 +303,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) => CameraApp(
-                                                id: patientId,
+                                                id: pid,
                                                 test: aceticAcid,
                                                 cameras: cameras)));
                                   }
@@ -304,7 +320,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                                 RoundedRectangleBorder>(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0),
                         ))),
-                        onPressed: areAllFilled
+                        onPressed: _checkForAllFilled()
                             ? () {
                                 if (_formKey.currentState!.validate()) {
                                   setState(() {

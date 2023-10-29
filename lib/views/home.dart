@@ -67,8 +67,7 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      const Center(
-                          child: Text("Details about the application")),
+                      Center(child: Text(applicationDescription)),
                     ],
                   ),
                 ),

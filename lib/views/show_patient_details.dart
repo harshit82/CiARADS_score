@@ -14,7 +14,7 @@ class ShowPatientDetails extends StatefulWidget {
 class _ShowPatientDetailsState extends State<ShowPatientDetails> {
   Future<List<Patient>> getPatientsList() async {
     // TODO: get data from db, make more flexible
-    List<Map<String, dynamic>> dataMap = await PatientDB.getAllPatientData();
+    List<Map<String, dynamic>> dataMap = await PatientDB().getAllPatientData();
     return List.generate(
       dataMap.length,
       (index) => Patient(

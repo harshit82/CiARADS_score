@@ -45,18 +45,13 @@ class DatabaseService {
     await sql.deleteDatabase(databasePath);
   }
 
-  Future<void> closeDB(String databasePath) async {
-    sql.Database db = await sql.openDatabase(databasePath);
-    await db.close();
-  }
-
   Future<void> saveImage(String base64Image) async {
     final path = await fullPath;
     sql.Database db = await sql.openDatabase(path);
     await db.transaction((txn) async {
       await txn.rawInsert('INSERT INTO $tableName VALUES (?)', [base64Image]);
     });
-    closeDB(path);
+    await db.close();
   }
 
   Future<Uint8List> loadImage(String image) async {

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -94,51 +94,93 @@ class _CameraAppState extends State<CameraApp> {
     _initCamera(_selectedCameraIndex);
   }
 
-  /// {@_toggleFlashLight} turn on/off the flash light
-  void _toggleFlashLight() {
-    if (_isFlashOn == true) {
-      controller.setFlashMode(FlashMode.off);
-      setState(() {
-        _isFlashOn = false;
-      });
-    } else {
-      controller.setFlashMode(FlashMode.torch);
-      setState(() {
-        _isFlashOn = true;
-      });
-    }
-  }
-
-  static Future<String> getExternalDocumentPath() async {
+  Future<Directory?> getExternalStorageDir() async {
     // To check whether permission is given for this app or not.
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       // If not we will ask for permission first
       await Permission.storage.request();
     }
-    Directory _directory = Directory("");
-    if (Platform.isAndroid) {
-      // Redirects it to download folder in android
-      _directory = Directory("/storage/emulated/0/Download");
-    } else {
-      _directory = await getApplicationDocumentsDirectory();
-    }
+    Directory? directory = await getExternalStorageDirectory();
+    // if (Platform.isAndroid) {
+    //   // Redirects it to download folder in android
+    //   directory = Directory("/storage/emulated/0/Pictures");
+    // } else {
+    //   directory = await getApplicationDocumentsDirectory();
+    // }
+    return directory;
 
-    final exPath = _directory.path;
-    if (kDebugMode) {
-      print("Saved Path: $exPath");
-    }
-    await Directory(exPath).create(recursive: true);
-    return exPath;
+    // final exPath = directory.path;
+    // if (kDebugMode) {
+    //   print("Saved Path: $exPath");
+    // }
+    // await Directory(exPath).create(recursive: true);
+    // return exPath;
   }
+
+  // Future<File?> changeFileName(File? file, String newFileName) async {
+  //   var path = file!.path;
+  //   var lastSeparator = path.lastIndexOf(Platform.pathSeparator);
+  //   var newPath = path.substring(0, lastSeparator + 1) + newFileName;
+  //   return file.rename(newPath);
+  // }
+
+  Future<Directory> createNewImgDir({required String newDirName}) async {
+    // using the path_provider plugin to get the application directory
+    final Directory? appDir = await getExternalStorageDir();
+
+    // creating new folder
+    final newImgDir =
+        await Directory('$appDir/$newDirName').create(recursive: true);
+    return newImgDir;
+    //saveImageToDisk(appDir!.path, newImgDir, widget.id, widget.test);
+  }
+
+  Future<File> saveImageToDisk(String path, Directory directory,
+      String patientId, String testName) async {
+    try {
+      File tempFile = File(path);
+      img.Image? image = img.decodeImage(tempFile.readAsBytesSync());
+      img.Image mImage = img.copyResize(image!, width: 521);
+      String imgType = path.split('.').last;
+      // saving the path in the required format
+      String mPath =
+          '${directory.path}/${patientId}_$testName/${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}.$imgType';
+      File dFile = File(mPath);
+      if (imgType == 'jpg' || imgType == 'jpeg') {
+        dFile.writeAsBytesSync(img.encodeJpg(mImage));
+      } else {
+        dFile.writeAsBytesSync(img.encodePng(mImage));
+      }
+      return dFile;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    return File(path);
+  }
+
+  // Future<File?> saveImageToLocalStorage(XFile? image, String imageName) async {
+  //   final pickedImage =
+  //       await ImagePicker().pickImage(source: ImageSource.gallery);
+  //   if (pickedImage == null) return null;
+
+  //   try {
+  //     final directory = await getExternalStorageDirectory();
+  //     if (directory != null) {
+  //       return File(pickedImage.path).copy('${directory.path}/$imageName.png');
+  //     }
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e);
+  //     }
+  //   }
+  //   return null;
+  // }
 
   /// {@captureImage} captures the image
   void captureImage() async {
-    // using the path_provider plugin to get the application paths
-    final String appDirPath = await getExternalDocumentPath();
-    // saving the path in the required format
-    //final String capturePath = '$appDirPath/${DateTime.now()}.jpg';
-
     if (controller.value.isTakingPicture) {
       return;
     }
@@ -157,18 +199,24 @@ class _CameraAppState extends State<CameraApp> {
       String imagePath = capturedImage.path;
       // saving the image to the galley using the GalleySaver plugin
       await GallerySaver.saveImage(imagePath);
-
       Fluttertoast.showToast(msg: 'Saved to gallery');
 
       if (kDebugMode) {
         print('Photo captured and saved to gallery');
       }
 
-      final String filePath =
-          '$appDirPath/${widget.id}_${widget.test}/${DateTime.now().day}/${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}.jpg';
+      // for image preview in camera
+      _capturedImage = File(imagePath);
 
-      _capturedImage = File(capturedImage.path);
-      _capturedImage!.renameSync(filePath);
+      // //saveImageToNewDir();
+      // Directory newDir = await createNewImgDir(newDirName: 'patient_images');
+      // saveImageToDisk(imagePath, newDir, widget.id, widget.test);
+
+      //await FileSaver.instance
+      //     .saveFile(name: "${widget.id}_${widget.test}", file: _capturedImage);
+
+      // changeFileName(_capturedImage, appDir.path);
+      // _capturedImage!.renameSync(appDir.path);
     } catch (e) {
       if (kDebugMode) {
         print("Error: ${e.toString()}");
@@ -176,6 +224,21 @@ class _CameraAppState extends State<CameraApp> {
     } finally {
       setState(() {
         isCapturing = false;
+      });
+    }
+  }
+
+  /// {@_toggleFlashLight} turn on/off the flash light
+  void _toggleFlashLight() {
+    if (_isFlashOn == true) {
+      controller.setFlashMode(FlashMode.off);
+      setState(() {
+        _isFlashOn = false;
+      });
+    } else {
+      controller.setFlashMode(FlashMode.torch);
+      setState(() {
+        _isFlashOn = true;
       });
     }
   }

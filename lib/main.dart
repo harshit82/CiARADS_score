@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Lato',
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: enterDiagnosticData,
+      initialRoute: home,
       routes: {
         home: (context) => const Home(),
         showPatientDetails: (context) => const ShowPatientDetails(),

@@ -187,7 +187,7 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
 
                           _saveToDB();
                         });
-                        // TODO: Fix error: type 'String' is not a subtype of type 'int' in type cast
+
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) => DiagnosticData(
                                 patientId: patientIdController.text)));
