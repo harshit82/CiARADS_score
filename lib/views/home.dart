@@ -1,5 +1,6 @@
-import 'package:CiARADS/constants.dart';
-import 'package:CiARADS/routes.dart';
+import 'package:CiARADS/constants/constants_export.dart';
+import 'package:CiARADS/view_model.dart';
+import 'package:CiARADS/views/views_export.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -10,7 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late bool isButtonActive = true;
+  bool isButtonActive = false;
   late TextEditingController patientIdController;
 
   @override
@@ -67,7 +68,8 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      Center(child: Text(applicationDescription)),
+                      const Expanded(
+                          child: Center(child: Text(applicationDescription))),
                     ],
                   ),
                 ),
@@ -90,12 +92,7 @@ class _HomeState extends State<Home> {
                     const SizedBox(width: 15),
                     InkWell(
                       onTap: () {
-                        // var allPatientData = await PatientDB().getAllPatientData();
-                        // if (kDebugMode) {
-                        //   print(allPatientData);
-                        // }
-                        // TODO: Fix required
-                        //const ShowPatientDetails();
+                        ViewModel().setId('');
                         Navigator.of(context).pushNamed(showPatientDetails);
                       },
                       child: Container(
@@ -129,10 +126,14 @@ class _HomeState extends State<Home> {
                             isButtonActive = false;
                             patientIdController.clear();
                           });
+                          ViewModel().setId(patientIdController.text);
+                          Navigator.of(context).pushNamed(showPatientDetails);
                         }
                       : null,
                   child: const Text("Search"),
-                )
+                ),
+                const Align(
+                    alignment: Alignment.bottomCenter, child: Credits()),
               ],
             ),
           ),

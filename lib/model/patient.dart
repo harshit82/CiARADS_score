@@ -8,12 +8,12 @@ class Patient {
   final int patient_age;
   final String doctor_name;
   final String hospital_name;
-  final String margin_and_surface;
-  final String vessel;
-  final String lesion_size;
-  final String acetic_acid;
-  final String lugol_iodine;
-  final String total_score;
+  final int margin_and_surface;
+  final int vessel;
+  final int lesion_size;
+  final int acetic_acid;
+  final int lugol_iodine;
+  final int total_score;
   final String biopsy_taken;
   final String histopathology_report;
   final String lugolIodineImagesPath;
@@ -47,12 +47,12 @@ class Patient {
     int? patient_age,
     String? doctor_name,
     String? hospital_name,
-    String? margin_and_surface,
-    String? vessel,
-    String? lesion_size,
-    String? acetic_acid,
-    String? lugol_iodine,
-    String? total_score,
+    int? margin_and_surface,
+    int? vessel,
+    int? lesion_size,
+    int? acetic_acid,
+    int? lugol_iodine,
+    int? total_score,
     String? biopsy_taken,
     String? histopathology_report,
     String? lugolIodineImagesPath,
@@ -116,12 +116,12 @@ class Patient {
       patient_age: map['patient_age']?.toInt() ?? 0,
       doctor_name: map['doctor_name'] ?? '',
       hospital_name: map['hospital_name'] ?? '',
-      margin_and_surface: map['margin_and_surface'] ?? '',
-      vessel: map['vessel'] ?? '',
-      lesion_size: map['lesion_size'] ?? '',
-      acetic_acid: map['acetic_acid'] ?? '',
-      lugol_iodine: map['lugol_iodine'] ?? '',
-      total_score: map['total_score'] ?? '',
+      margin_and_surface: map['margin_and_surface']?.toInt() ?? 0,
+      vessel: map['vessel']?.toInt() ?? 0,
+      lesion_size: map['lesion_size']?.toInt() ?? 0,
+      acetic_acid: map['acetic_acid']?.toInt() ?? 0,
+      lugol_iodine: map['lugol_iodine']?.toInt() ?? 0,
+      total_score: map['total_score']?.toInt() ?? 0,
       biopsy_taken: map['biopsy_taken'] ?? '',
       histopathology_report: map['histopathology_report'] ?? '',
       lugolIodineImagesPath: map['lugolIodineImagesPath'] ?? '',

@@ -1,11 +1,12 @@
 import 'package:CiARADS/camera.dart';
-import 'package:CiARADS/routes.dart';
-import 'package:CiARADS/widgets/dropdown_menu.dart';
+import 'package:CiARADS/constants/routes.dart';
+import 'package:CiARADS/main.dart';
+import 'package:CiARADS/views/widgets/credits.dart';
+import 'package:CiARADS/views/widgets/dropdown_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:CiARADS/database/database_export.dart';
-import '../constants.dart';
 
 class DiagnosticData extends StatefulWidget {
   final String patientId;
@@ -337,6 +338,8 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                               }
                             : null,
                         child: const Text("Save")),
+                    const Align(
+                        alignment: Alignment.bottomCenter, child: Credits()),
                   ]),
             ),
           ),

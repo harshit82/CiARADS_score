@@ -1,5 +1,6 @@
-import 'package:CiARADS/utils.dart';
+import 'package:CiARADS/constants/utils.dart';
 import 'package:CiARADS/views/diagnostic_data.dart';
+import 'package:CiARADS/views/widgets/credits.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,6 +14,21 @@ class EnterPatientDetails extends StatefulWidget {
 }
 
 class _EnterPatientDetailsState extends State<EnterPatientDetails> {
+  bool isNameFilled = false;
+  bool isAgeFilled = false;
+  bool isHospitalNameFilled = false;
+  bool isPatientIdFilled = false;
+  bool isDoctorNameFilled = false;
+
+  bool _areAllFilled() {
+    if (isNameFilled == false ||
+        isAgeFilled == false ||
+        isHospitalNameFilled == false ||
+        isPatientIdFilled == false ||
+        isDoctorNameFilled == false) return false;
+    return true;
+  }
+
   late TextEditingController nameController;
   late TextEditingController ageController;
   late TextEditingController hospitalNameController;
@@ -29,6 +45,41 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
     hospitalNameController = TextEditingController();
     patientIdController = TextEditingController();
     doctorNameController = TextEditingController();
+
+    nameController.addListener(() {
+      final isNameFilled = nameController.text.isNotEmpty;
+      setState(() {
+        this.isNameFilled = isNameFilled;
+      });
+    });
+
+    ageController.addListener(() {
+      final isAgeFilled = ageController.text.isNotEmpty;
+      setState(() {
+        this.isAgeFilled = isAgeFilled;
+      });
+    });
+
+    hospitalNameController.addListener(() {
+      final isHospitalNameFilled = hospitalNameController.text.isNotEmpty;
+      setState(() {
+        this.isHospitalNameFilled = isHospitalNameFilled;
+      });
+    });
+
+    patientIdController.addListener(() {
+      final isPatientIdFilled = patientIdController.text.isNotEmpty;
+      setState(() {
+        this.isPatientIdFilled = isPatientIdFilled;
+      });
+    });
+
+    doctorNameController.addListener(() {
+      final isDoctorNameFilled = doctorNameController.text.isNotEmpty;
+      setState(() {
+        this.isDoctorNameFilled = isDoctorNameFilled;
+      });
+    });
   }
 
   @override
@@ -102,7 +153,7 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
                         errorStyle: const TextStyle(color: Colors.redAccent)),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Enter your age";
+                        return "Please enter your age";
                       }
                       if (isNumeric(value) == false) {
                         return "Please enter a number";
@@ -123,7 +174,7 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
                     controller: patientIdController,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Enter patient id";
+                        return "Please enter patient id";
                       }
                       return null;
                     },
@@ -178,23 +229,30 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
                                 RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0),
                     ))),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        setState(() {
-                          _formKey.currentState?.save();
+                    onPressed: _areAllFilled()
+                        ? () {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _formKey.currentState?.save();
 
-                          Fluttertoast.showToast(msg: "Saving patient details");
+                                Fluttertoast.showToast(
+                                    msg: "Saving patient details");
 
-                          _saveToDB();
-                        });
+                                _saveToDB();
+                              });
 
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => DiagnosticData(
-                                patientId: patientIdController.text)));
-                      }
-                    },
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => DiagnosticData(
+                                          patientId:
+                                              patientIdController.text)));
+                            }
+                          }
+                        : null,
                     child: const Text("Save"),
                   ),
+                  const Align(
+                      alignment: Alignment.bottomCenter, child: Credits()),
                 ],
               ),
             ),

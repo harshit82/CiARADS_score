@@ -1,9 +1,12 @@
 import 'package:CiARADS/camera.dart';
-import 'package:CiARADS/constants.dart';
-import 'package:CiARADS/routes.dart';
+import 'package:CiARADS/constants/routes.dart';
+import 'package:CiARADS/view_model.dart';
 import 'package:CiARADS/views/views_export.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+late List<CameraDescription> cameras;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,25 +19,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CiARADS',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'Lato',
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ViewModel()),
+      ],
+      child: MaterialApp(
+        title: 'CiARADS',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          fontFamily: 'Lato',
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        debugShowCheckedModeBanner: false,
+        initialRoute: home,
+        routes: {
+          home: (context) => const Home(),
+          showPatientDetails: (context) => const ShowPatientDetails(),
+          camera: (context) => CameraApp(
+                cameras: cameras,
+                id: '',
+                test: '',
+              ),
+          enterPatientDetails: (context) => const EnterPatientDetails(),
+          enterDiagnosticData: (context) => const DiagnosticData(patientId: ''),
+        },
       ),
-      debugShowCheckedModeBanner: false,
-      initialRoute: home,
-      routes: {
-        home: (context) => const Home(),
-        showPatientDetails: (context) => const ShowPatientDetails(),
-        camera: (context) => CameraApp(
-              cameras: cameras,
-              id: '',
-              test: '',
-            ),
-        enterPatientDetails: (context) => const EnterPatientDetails(),
-        enterDiagnosticData: (context) => const DiagnosticData(patientId: ''),
-      },
     );
   }
 }

@@ -45,6 +45,14 @@ class _CameraAppState extends State<CameraApp> {
 
   /// {@_initCamera} initializes the camera for use
   Future<void> _initCamera(int cameraIndex) async {
+    // camera permission handling
+    var status = await Permission.camera.status;
+    if (!status.isGranted) {
+      await Permission.camera.request();
+    } else if (!status.isPermanentlyDenied) {
+      Permission.camera.onPermanentlyDeniedCallback(
+          () => print("Permanently Denied Camera Access"));
+    }
     // setting the camera controller to the default back camera
     controller = CameraController(
         widget.cameras[_selectedCameraIndex], ResolutionPreset.max);

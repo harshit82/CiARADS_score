@@ -42,6 +42,7 @@ dependencies:
   path: any
   path_provider: ^2.1.1
   permission_handler: ^11.0.1
+  provider: ^6.0.5
   sqflite: ^2.3.0
   syncfusion_flutter_sliders: ^23.1.41
 

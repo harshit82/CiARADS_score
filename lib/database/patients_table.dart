@@ -1,5 +1,4 @@
 import 'package:CiARADS/database/database_export.dart';
-import 'package:CiARADS/model/patient.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sqflite/sqflite.dart' as sql;
@@ -31,6 +30,7 @@ class PatientDB {
           """);
 
       Fluttertoast.showToast(msg: "Creating table: $tableName");
+      database.close();
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       if (kDebugMode) {
@@ -43,6 +43,7 @@ class PatientDB {
     try {
       final database = await DatabaseService().database;
       await database.delete(tableName);
+      await database.close();
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       if (kDebugMode) {
@@ -56,6 +57,7 @@ class PatientDB {
     try {
       final database = await DatabaseService().database;
       await database.insert(tableName, patientData);
+      await database.close();
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       if (kDebugMode) {
@@ -70,6 +72,7 @@ class PatientDB {
     try {
       final database = await DatabaseService().database;
       await database.update(tableName, diagnosisData);
+      await database.close();
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       if (kDebugMode) {
@@ -84,6 +87,7 @@ class PatientDB {
       await database.execute("""
       DELETE FROM $tableName WHERE $primaryKey = $patientId
     """);
+      await database.close();
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       if (kDebugMode) {
@@ -103,6 +107,7 @@ class PatientDB {
         updatedData,
         conflictAlgorithm: ConflictAlgorithm.rollback,
       );
+      await database.close();
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       if (kDebugMode) {
@@ -111,15 +116,16 @@ class PatientDB {
     }
   }
 
-  static getPatientData({required String patientId}) async {
+  static Future<List<Map<String, dynamic>>?> getPatientData(
+      {required String patientId}) async {
     try {
       final database = await DatabaseService().database;
-      List<Map<String, dynamic>> patientData = await database.rawQuery("""
-    SELECT * FROM $tableName WHERE $primaryKey = $patientId
-    """);
+      List<Map<String, dynamic>> patientData = await database
+          .rawQuery("SELECT * FROM $tableName WHERE $primaryKey = $patientId");
       if (kDebugMode) {
         print(patientData);
       }
+      //await database.close();
       return patientData;
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
@@ -127,21 +133,25 @@ class PatientDB {
         print(e.toString());
       }
     }
+    return null;
   }
 
-  Future getAllPatientData() async {
+  static Future<List<Map<String, dynamic>>?> getAllPatientData() async {
     try {
       final database = await DatabaseService().database;
-      List<Map<String, dynamic>> allPatients = await database.rawQuery("""
-    SELECT * FROM $tableName
-    """);
-      return List.generate(
-          allPatients.length, (index) => Patient.fromMap(allPatients[index]));
+      List<Map<String, dynamic>> allPatients =
+          await database.rawQuery("SELECT * FROM $tableName");
+      if (kDebugMode) {
+        print(allPatients);
+      }
+      //await database.close();
+      return allPatients;
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
     }
+    return null;
   }
 }
