@@ -14,6 +14,11 @@ class PatientView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Fluttertoast.showToast(msg: "Downloading PDF");
+            },
+            child: const Icon(Icons.picture_as_pdf)),
         appBar: AppBar(
           title: Text(patient.patient_name),
           centerTitle: true,
@@ -71,12 +76,6 @@ class PatientView extends StatelessWidget {
               //     DatabaseService()
               //         .loadImage(greenFilterImagesPath),
               //     fit: BoxFit.cover),
-              const SizedBox(height: 5),
-              ElevatedButton(
-                  onPressed: () {
-                    Fluttertoast.showToast(msg: "Downloading PDF");
-                  },
-                  child: const Text("Save as PDF")),
 
               const Align(alignment: Alignment.bottomCenter, child: Credits()),
             ]),

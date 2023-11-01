@@ -99,17 +99,18 @@ class _DiagnosticDataState extends State<DiagnosticData> {
 
   void _saveToDB() {
     Map<String, dynamic> diagnosisData = {
-      marginAndSurface: marginAndSurfaceController.text,
-      vessel: vesselController.text,
-      lesionSize: lesionSizeController.text,
-      aceticAcid: aceticAcidController.text,
-      lugolIodine: lugolIodineController.text,
-      totalScore: totalScoreController.text,
+      marginAndSurface: int.parse(marginAndSurfaceController.text),
+      vessel: int.parse(vesselController.text),
+      lesionSize: int.parse(lesionSizeController.text),
+      aceticAcid: int.parse(aceticAcidController.text),
+      lugolIodine: int.parse(lugolIodineController.text),
+      totalScore: int.parse(totalScoreController.text),
       biopsyTaken: biopsyTakenController.text,
       histopathologyReport: histopathologyReportController.text,
     };
 
     if (kDebugMode) {
+      print("Diagnosis data map = ");
       print(diagnosisData);
     }
 

@@ -1,4 +1,5 @@
 import 'package:CiARADS/database/database_export.dart';
+import 'package:CiARADS/views/views_export.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sqflite/sqflite.dart' as sql;
@@ -30,9 +31,8 @@ class PatientDB {
           """);
 
       Fluttertoast.showToast(msg: "Creating table: $tableName");
-      database.close();
     } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
+      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
@@ -43,9 +43,8 @@ class PatientDB {
     try {
       final database = await DatabaseService().database;
       await database.delete(tableName);
-      await database.close();
     } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
+      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
@@ -57,9 +56,8 @@ class PatientDB {
     try {
       final database = await DatabaseService().database;
       await database.insert(tableName, patientData);
-      await database.close();
     } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
+      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
@@ -69,15 +67,72 @@ class PatientDB {
   Future<void> addDiagnosisData(
       {required String patientId,
       required Map<String, dynamic> diagnosisData}) async {
+    List<dynamic> dataList = [];
+    diagnosisData.forEach((key, value) {
+      dataList.add(value);
+    });
+    if (kDebugMode) {
+      print("Diagnostic data to be added = ");
+      print(dataList);
+    }
     try {
       final database = await DatabaseService().database;
-      await database.update(tableName, diagnosisData);
-      await database.close();
+      await database.rawUpdate("""
+        UPDATE $tableName SET
+        $marginAndSurface = ?,
+        $vessel = ?,
+        $lesionSize = ?,
+        $aceticAcid = ?,
+        $lugolIodine = ?,
+        $totalScore = ?,
+        $biopsyTaken = ?,
+        $histopathologyReport = ?
+        WHERE $primaryKey = '$patientId' 
+        """, dataList);
     } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
+      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
+    }
+  }
+
+  Future<void> addImagesPaths(
+      {required String patientId,
+      required Map<String, dynamic> imagePaths}) async {
+    List<String> paths = [];
+    imagePaths.forEach((key, value) {
+      paths.add(value);
+    });
+
+    if (kDebugMode) {
+      print("Image paths to be added = ");
+      print(paths);
+    }
+
+    try {
+      final database = await DatabaseService().database;
+      await database.rawUpdate("""
+        UPDATE $tableName SET
+        $lugolIodineImagesPath = ?,
+        $greenFilterImagesPath = ?,
+        $normalSalineImagesPath = ?,
+        $aceticAcidImagesPath = ?
+        WHERE $primaryKey = '$patientId' 
+      """);
+    } catch (e) {
+      ErrorWidget(errorMessage: e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  Future<void> seeTable() async {
+    final database = await DatabaseService().database;
+    var table = await database.rawQuery("SELECT * FROM $tableName");
+    if (kDebugMode) {
+      print(table);
     }
   }
 
@@ -85,11 +140,11 @@ class PatientDB {
     try {
       final database = await DatabaseService().database;
       await database.execute("""
-      DELETE FROM $tableName WHERE $primaryKey = $patientId
-    """);
-      await database.close();
+      DELETE FROM $tableName WHERE $primaryKey = '$patientId'
+      DELETE FROM $tableName WHERE $primaryKey = '$patientId'
+      """);
     } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
+      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
@@ -101,57 +156,37 @@ class PatientDB {
       required Map<String, dynamic> updatedData}) async {
     try {
       final database = await DatabaseService().database;
-      Fluttertoast.showToast(msg: "Updating patient data");
       await database.update(
         tableName,
         updatedData,
         conflictAlgorithm: ConflictAlgorithm.rollback,
       );
-      await database.close();
     } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
+      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
     }
   }
 
-  static Future<List<Map<String, dynamic>>?> getPatientData(
+  static Future<List<Map<String, dynamic>>> getPatientData(
       {required String patientId}) async {
-    try {
-      final database = await DatabaseService().database;
-      List<Map<String, dynamic>> patientData = await database
-          .rawQuery("SELECT * FROM $tableName WHERE $primaryKey = $patientId");
-      if (kDebugMode) {
-        print(patientData);
-      }
-      //await database.close();
-      return patientData;
-    } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
-      if (kDebugMode) {
-        print(e.toString());
-      }
+    final database = await DatabaseService().database;
+    List<Map<String, dynamic>> patientData = await database
+        .rawQuery("SELECT * FROM $tableName WHERE $primaryKey = '$patientId' ");
+    if (kDebugMode) {
+      print(patientData);
     }
-    return null;
+    return patientData;
   }
 
-  static Future<List<Map<String, dynamic>>?> getAllPatientData() async {
-    try {
-      final database = await DatabaseService().database;
-      List<Map<String, dynamic>> allPatients =
-          await database.rawQuery("SELECT * FROM $tableName");
-      if (kDebugMode) {
-        print(allPatients);
-      }
-      //await database.close();
-      return allPatients;
-    } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
-      if (kDebugMode) {
-        print(e.toString());
-      }
+  static Future<List<Map<String, dynamic>>> getAllPatientData() async {
+    final database = await DatabaseService().database;
+    List<Map<String, dynamic>> allPatients =
+        await database.rawQuery("SELECT * FROM $tableName");
+    if (kDebugMode) {
+      print(allPatients);
     }
-    return null;
+    return allPatients;
   }
 }

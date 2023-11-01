@@ -1,7 +1,7 @@
 import 'package:CiARADS/model/patient.dart';
 import 'package:CiARADS/views/patient_view.dart';
 import 'package:flutter/material.dart';
-import 'package:CiARADS/view_model.dart';
+import 'package:CiARADS/view_model/view_model.dart';
 import 'package:provider/provider.dart';
 
 class ShowPatientDetails extends StatelessWidget {

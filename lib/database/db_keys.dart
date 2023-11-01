@@ -1,12 +1,13 @@
 const String databaseName = 'patient_data.db';
-const String tableName = "patients";
-const String primaryKey = "patient_id";
+const String tableName = 'patients';
+const String primaryKey = 'patient_id';
 
 const String vessel = 'vessel';
 const String patientName = 'patient_name';
 const String patientAge = 'patient_age';
 const String patientId = 'patient_id';
 const String doctorName = 'doctor_name';
+
 const String lesionSize = 'lesion_size';
 const String aceticAcid = 'acetic_acid';
 const String lugolIodine = 'lugol_iodine';

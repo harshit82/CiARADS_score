@@ -22,21 +22,23 @@ class ViewModel extends ChangeNotifier {
 
   void setPatientModel(List<Patient> patientModel) {
     _patientModel = patientModel;
-    notifyListeners();
   }
 
   void setId(String id) {
     _id = id;
   }
 
-  getData() async {
+  void getData() async {
     setLoading(true);
+
     late List<Map<String, dynamic>> dataList;
-    if (id == '') {
-      dataList = (await PatientDB.getAllPatientData())!;
+
+    if (id.isEmpty) {
+      dataList = await PatientDB.getAllPatientData();
     } else {
-      dataList = (await PatientDB.getPatientData(patientId: id))!;
+      dataList = await PatientDB.getPatientData(patientId: id);
     }
+
     if (kDebugMode) {
       print("Data List =\n");
       print(dataList);
@@ -44,11 +46,14 @@ class ViewModel extends ChangeNotifier {
 
     _patientModel = List.generate(
         dataList.length, (index) => Patient.fromMap(dataList[index]));
+
     if (kDebugMode) {
       print("Patient Model =\n");
       print(_patientModel);
     }
+
     setPatientModel(_patientModel);
+
     setLoading(false);
   }
 }

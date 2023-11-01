@@ -1,5 +1,5 @@
 import 'package:CiARADS/constants/constants_export.dart';
-import 'package:CiARADS/view_model.dart';
+import 'package:CiARADS/view_model/view_model.dart';
 import 'package:CiARADS/views/views_export.dart';
 import 'package:flutter/material.dart';
 
@@ -92,7 +92,6 @@ class _HomeState extends State<Home> {
                     const SizedBox(width: 15),
                     InkWell(
                       onTap: () {
-                        ViewModel().setId('');
                         Navigator.of(context).pushNamed(showPatientDetails);
                       },
                       child: Container(
@@ -126,6 +125,7 @@ class _HomeState extends State<Home> {
                             isButtonActive = false;
                             patientIdController.clear();
                           });
+                          // TODO: Fix get data for a particular patient in the view_model as well
                           ViewModel().setId(patientIdController.text);
                           Navigator.of(context).pushNamed(showPatientDetails);
                         }
