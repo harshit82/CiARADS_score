@@ -1,7 +1,9 @@
 import 'package:CiARADS/constants/constants_export.dart';
 import 'package:CiARADS/view_model/view_model.dart';
+import 'package:CiARADS/views/patient_view.dart';
 import 'package:CiARADS/views/views_export.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -34,6 +36,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    ViewModel viewModel = context.watch<ViewModel>();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -92,6 +95,8 @@ class _HomeState extends State<Home> {
                     const SizedBox(width: 15),
                     InkWell(
                       onTap: () {
+                        viewModel.setId('');
+                        viewModel.getData();
                         Navigator.of(context).pushNamed(showPatientDetails);
                       },
                       child: Container(
@@ -123,11 +128,16 @@ class _HomeState extends State<Home> {
                       ? () {
                           setState(() {
                             isButtonActive = false;
+
+                            viewModel.setId(patientIdController.text);
+                            viewModel.getData();
+
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => PatientView(
+                                    patient: viewModel.patientModel[0])));
+
                             patientIdController.clear();
                           });
-                          // TODO: Fix get data for a particular patient in the view_model as well
-                          ViewModel().setId(patientIdController.text);
-                          Navigator.of(context).pushNamed(showPatientDetails);
                         }
                       : null,
                   child: const Text("Search"),

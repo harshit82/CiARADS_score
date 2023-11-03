@@ -15,4 +15,5 @@ Errors:
 
 Bug:
 - https://github.com/flutter/flutter/issues/21911
-
+- https://github.com/flutter/flutter/issues/19644
+- https://stackoverflow.com/questions/12067180/why-is-the-physical-keyboard-not-working-in-my-android-app

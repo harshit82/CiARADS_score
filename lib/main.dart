@@ -1,6 +1,8 @@
 import 'package:CiARADS/camera.dart';
 import 'package:CiARADS/constants/routes.dart';
+import 'package:CiARADS/model/patient.dart';
 import 'package:CiARADS/view_model/view_model.dart';
+import 'package:CiARADS/views/patient_view.dart';
 import 'package:CiARADS/views/views_export.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
