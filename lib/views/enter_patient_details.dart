@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:CiARADS/database/database_export.dart';
 
+import '../camera/files_folders.dart';
+
 class EnterPatientDetails extends StatefulWidget {
   const EnterPatientDetails({super.key});
 

@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
-import 'package:CiARADS/constants/files_folders.dart';
+import 'package:CiARADS/camera/files_folders.dart';
 
 class CameraApp extends StatefulWidget {
   final String id;

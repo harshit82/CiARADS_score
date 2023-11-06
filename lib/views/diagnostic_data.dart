@@ -1,4 +1,4 @@
-import 'package:CiARADS/camera.dart';
+import 'package:CiARADS/camera/camera.dart';
 import 'package:CiARADS/constants/routes.dart';
 import 'package:CiARADS/main.dart';
 import 'package:CiARADS/views/widgets/credits.dart';
@@ -34,14 +34,15 @@ class _DiagnosticDataState extends State<DiagnosticData> {
   }
 
   void _calculateScore() {
-    // TODO: Check if the fields are filled with non NV values before parsing
-    final score = (int.parse(marginAndSurfaceController.text) +
-            int.parse(lesionSizeController.text) +
-            int.parse(aceticAcidController.text) +
-            int.parse(vesselController.text) +
-            int.parse(lugolIodineController.text))
-        .toString();
-    totalScoreController.text = score;
+    int score = 0;
+    if (_checkForAllFilled()) {
+      score = (int.parse(marginAndSurfaceController.text) +
+          int.parse(lesionSizeController.text) +
+          int.parse(aceticAcidController.text) +
+          int.parse(vesselController.text) +
+          int.parse(lugolIodineController.text));
+    }
+    totalScoreController.text = score.toString();
   }
 
   late TextEditingController marginAndSurfaceController;
