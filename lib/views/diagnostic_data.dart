@@ -34,6 +34,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
   }
 
   void _calculateScore() {
+    // TODO: Check if the fields are filled with non NV values before parsing
     final score = (int.parse(marginAndSurfaceController.text) +
             int.parse(lesionSizeController.text) +
             int.parse(aceticAcidController.text) +
@@ -146,8 +147,8 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                           label: 'Margin And Surface',
                           controller: marginAndSurfaceController,
                         ),
-                        const SizedBox(
-                          width: 10,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 60,
                         ),
                         DropDownMenu(
                           items: const ['NV', '0', '1', '2'],
@@ -168,8 +169,8 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                           label: 'Lesion Size',
                           controller: lesionSizeController,
                         ),
-                        const SizedBox(
-                          width: 10,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 60,
                         ),
                         DropDownMenu(
                           items: const ['NV', '0', '1', '2'],
@@ -190,8 +191,8 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                           label: 'Lugol Iodine',
                           controller: lugolIodineController,
                         ),
-                        const SizedBox(
-                          width: 10,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 60,
                         ),
                         DropDownMenu(
                           items: const ['NV', 'Required', 'Not required'],
@@ -252,12 +253,13 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                         ElevatedButton(
                             onPressed: isLugolIodineFilled
                                 ? () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
                                             builder: (context) => CameraApp(
-                                                id: pid,
-                                                test: lugolIodine,
-                                                cameras: cameras)));
+                                                  id: pid,
+                                                  test: lugolIodine,
+                                                  cameras: cameras,
+                                                )));
                                   }
                                 : null,
                             child: const Text("Lugol Iodine")),
@@ -267,12 +269,13 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                         ElevatedButton(
                             onPressed: isNormalSalineFilled
                                 ? () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
                                             builder: (context) => CameraApp(
-                                                id: pid,
-                                                test: normalSaline,
-                                                cameras: cameras)));
+                                                  id: pid,
+                                                  test: normalSaline,
+                                                  cameras: cameras,
+                                                )));
                                   }
                                 : null,
                             child: const Text("Normal Saline")),
@@ -287,12 +290,13 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                         ElevatedButton(
                             onPressed: isGreenFilterFilled
                                 ? () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
                                             builder: (context) => CameraApp(
-                                                id: pid,
-                                                test: greenFilter,
-                                                cameras: cameras)));
+                                                  cameras: cameras,
+                                                  id: pid,
+                                                  test: greenFilter,
+                                                )));
                                   }
                                 : null,
                             child: const Text("Green Filter")),
@@ -302,12 +306,13 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                         ElevatedButton(
                             onPressed: isAceticAcidFilled
                                 ? () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
                                             builder: (context) => CameraApp(
-                                                id: pid,
-                                                test: aceticAcid,
-                                                cameras: cameras)));
+                                                  cameras: cameras,
+                                                  id: pid,
+                                                  test: aceticAcid,
+                                                )));
                                   }
                                 : null,
                             child: const Text("Acetic acid")),

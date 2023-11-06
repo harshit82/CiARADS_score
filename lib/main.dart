@@ -1,8 +1,6 @@
 import 'package:CiARADS/camera.dart';
 import 'package:CiARADS/constants/routes.dart';
-import 'package:CiARADS/model/patient.dart';
 import 'package:CiARADS/view_model/view_model.dart';
-import 'package:CiARADS/views/patient_view.dart';
 import 'package:CiARADS/views/views_export.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +35,10 @@ class MyApp extends StatelessWidget {
         routes: {
           home: (context) => const Home(),
           showPatientDetails: (context) => const ShowPatientDetails(),
-          camera: (context) => CameraApp(
-                cameras: cameras,
+          camera: (context) => const CameraApp(
                 id: '',
                 test: '',
+                cameras: [],
               ),
           enterPatientDetails: (context) => const EnterPatientDetails(),
           enterDiagnosticData: (context) => const DiagnosticData(patientId: ''),

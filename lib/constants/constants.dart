@@ -5,3 +5,5 @@ const String labName = "LEAP lab";
 
 const String jipmerImage = "images/JIPMER.png";
 const String leapImage = "images/LEAP_lab.png";
+
+const String imageDirectory = "patient_images";

@@ -1,4 +1,4 @@
-import 'package:CiARADS/constants/utils.dart';
+import 'package:CiARADS/constants/constants_export.dart';
 import 'package:CiARADS/views/diagnostic_data.dart';
 import 'package:CiARADS/views/widgets/credits.dart';
 import 'package:flutter/foundation.dart';
@@ -29,7 +29,7 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
     return true;
   }
 
-  late TextEditingController nameController;
+  late TextEditingController patientNameController;
   late TextEditingController ageController;
   late TextEditingController hospitalNameController;
   late TextEditingController patientIdController;
@@ -40,14 +40,14 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController();
+    patientNameController = TextEditingController();
     ageController = TextEditingController();
     hospitalNameController = TextEditingController();
     patientIdController = TextEditingController();
     doctorNameController = TextEditingController();
 
-    nameController.addListener(() {
-      final isNameFilled = nameController.text.isNotEmpty;
+    patientNameController.addListener(() {
+      final isNameFilled = patientNameController.text.isNotEmpty;
       setState(() {
         this.isNameFilled = isNameFilled;
       });
@@ -85,7 +85,7 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
   @override
   void dispose() {
     super.dispose();
-    nameController.dispose();
+    patientNameController.dispose();
     ageController.dispose();
     hospitalNameController.dispose();
     patientIdController.dispose();
@@ -94,7 +94,7 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
 
   void _saveToDB() {
     Map<String, dynamic> patientDataMap = {
-      patientName: nameController.text,
+      patientName: patientNameController.text,
       patientAge: ageController.text,
       patientId: patientIdController.text,
       hospitalName: hospitalNameController.text,
@@ -139,7 +139,7 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
                       }
                       return null;
                     },
-                    controller: nameController,
+                    controller: patientNameController,
                   ),
                   const SizedBox(
                     height: 20,
@@ -239,6 +239,10 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
                                     msg: "Saving patient details");
 
                                 _saveToDB();
+
+                                // Creating folder using the name and the id of the patient
+                                FilesFolders().createFolder(
+                                    "${patientIdController.text}_${patientNameController.text}");
                               });
 
                               Navigator.of(context).pushReplacement(

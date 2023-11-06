@@ -5,11 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gallery_saver/gallery_saver.dart';
-import 'package:image/image.dart' as img;
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:CiARADS/constants/files_folders.dart';
 
 class CameraApp extends StatefulWidget {
   final String id;
@@ -39,26 +37,32 @@ class _CameraAppState extends State<CameraApp> {
   // for zoom
   double _currentZoom = 1.0;
   // captured image stored as an Xfile
-  File? _capturedImage;
+  XFile? capturedImage;
   // for making capture sound
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
+  // to check if the camera controller is initialized
+  bool _isReady = false;
 
   /// {@_initCamera} initializes the camera for use
   Future<void> _initCamera(int cameraIndex) async {
-    // camera permission handling
-    var status = await Permission.camera.status;
+    // // camera permission handling
+    PermissionStatus status = await Permission.camera.status;
     if (!status.isGranted) {
       await Permission.camera.request();
     } else if (!status.isPermanentlyDenied) {
-      Permission.camera.onPermanentlyDeniedCallback(
-          () => print("Permanently Denied Camera Access"));
+      Permission.camera.onPermanentlyDeniedCallback(() {
+        ErrorWidget("Permanently Denied Camera Access");
+        print("Permanently Denied Camera Access");
+      });
     }
     // setting the camera controller to the default back camera
     controller = CameraController(
-        widget.cameras[_selectedCameraIndex], ResolutionPreset.max);
+        widget.cameras[_selectedCameraIndex], ResolutionPreset.max,
+        enableAudio: false);
     try {
       // checking if the controller has been initialized
       await controller.initialize().then((_) {
+        _isReady = true;
         if (!mounted) {
           return;
         }
@@ -73,21 +77,23 @@ class _CameraAppState extends State<CameraApp> {
               if (kDebugMode) {
                 print(e.code);
               }
-              Fluttertoast.showToast(msg: "Camera Access Denied");
+              ErrorWidget("Camera Access Denied");
               break;
             default:
               {
                 // Handle other errors here.
                 if (kDebugMode) {
                   print(e.code);
+                  print(e.description.toString());
                 }
-                Fluttertoast.showToast(msg: e.code);
+                ErrorWidget(e.description.toString());
                 break;
               }
           }
         }
       });
     } catch (e) {
+      ErrorWidget(e.toString());
       if (kDebugMode) {
         print("Error: ${e.toString()}");
       }
@@ -102,91 +108,6 @@ class _CameraAppState extends State<CameraApp> {
     _initCamera(_selectedCameraIndex);
   }
 
-  Future<Directory?> getExternalStorageDir() async {
-    // To check whether permission is given for this app or not.
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      // If not we will ask for permission first
-      await Permission.storage.request();
-    }
-    Directory? directory = await getExternalStorageDirectory();
-    // if (Platform.isAndroid) {
-    //   // Redirects it to download folder in android
-    //   directory = Directory("/storage/emulated/0/Pictures");
-    // } else {
-    //   directory = await getApplicationDocumentsDirectory();
-    // }
-    return directory;
-
-    // final exPath = directory.path;
-    // if (kDebugMode) {
-    //   print("Saved Path: $exPath");
-    // }
-    // await Directory(exPath).create(recursive: true);
-    // return exPath;
-  }
-
-  // Future<File?> changeFileName(File? file, String newFileName) async {
-  //   var path = file!.path;
-  //   var lastSeparator = path.lastIndexOf(Platform.pathSeparator);
-  //   var newPath = path.substring(0, lastSeparator + 1) + newFileName;
-  //   return file.rename(newPath);
-  // }
-
-  Future<Directory> createNewImgDir({required String newDirName}) async {
-    // using the path_provider plugin to get the application directory
-    final Directory? appDir = await getExternalStorageDir();
-
-    // creating new folder
-    final newImgDir =
-        await Directory('$appDir/$newDirName').create(recursive: true);
-    return newImgDir;
-    //saveImageToDisk(appDir!.path, newImgDir, widget.id, widget.test);
-  }
-
-  Future<File> saveImageToDisk(String path, Directory directory,
-      String patientId, String testName) async {
-    try {
-      File tempFile = File(path);
-      img.Image? image = img.decodeImage(tempFile.readAsBytesSync());
-      img.Image mImage = img.copyResize(image!, width: 521);
-      String imgType = path.split('.').last;
-      // saving the path in the required format
-      String mPath =
-          '${directory.path}/${patientId}_$testName/${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}.$imgType';
-      File dFile = File(mPath);
-      if (imgType == 'jpg' || imgType == 'jpeg') {
-        dFile.writeAsBytesSync(img.encodeJpg(mImage));
-      } else {
-        dFile.writeAsBytesSync(img.encodePng(mImage));
-      }
-      return dFile;
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-    return File(path);
-  }
-
-  // Future<File?> saveImageToLocalStorage(XFile? image, String imageName) async {
-  //   final pickedImage =
-  //       await ImagePicker().pickImage(source: ImageSource.gallery);
-  //   if (pickedImage == null) return null;
-
-  //   try {
-  //     final directory = await getExternalStorageDirectory();
-  //     if (directory != null) {
-  //       return File(pickedImage.path).copy('${directory.path}/$imageName.png');
-  //     }
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print(e);
-  //     }
-  //   }
-  //   return null;
-  // }
-
   /// {@captureImage} captures the image
   void captureImage() async {
     if (controller.value.isTakingPicture) {
@@ -199,32 +120,23 @@ class _CameraAppState extends State<CameraApp> {
       });
 
       // invoking the {@takePicture} function defined under the controller of the camera package to capture the image
-      final XFile capturedImage = await controller.takePicture();
+      capturedImage = await controller.takePicture();
       // using audio player to play the shutter sound on taking a picture
       audioPlayer.open(Audio('sound/camera_shutter.mp3'));
       audioPlayer.play();
 
-      String imagePath = capturedImage.path;
-      // saving the image to the galley using the GalleySaver plugin
-      await GallerySaver.saveImage(imagePath);
-      Fluttertoast.showToast(msg: 'Saved to gallery');
+      String imagePath = capturedImage!.path;
+      Fluttertoast.showToast(msg: 'Saved image');
 
       if (kDebugMode) {
-        print('Photo captured and saved to gallery');
+        print('Photo captured and saved');
       }
 
-      // for image preview in camera
-      _capturedImage = File(imagePath);
+      // image name is a combination of patient_id and patient_name with the current date and time
+      String imageName =
+          "#${widget.id}%${widget.test}|${DateTime.now()}.${imagePath.split('.').last}";
 
-      // //saveImageToNewDir();
-      // Directory newDir = await createNewImgDir(newDirName: 'patient_images');
-      // saveImageToDisk(imagePath, newDir, widget.id, widget.test);
-
-      //await FileSaver.instance
-      //     .saveFile(name: "${widget.id}_${widget.test}", file: _capturedImage);
-
-      // changeFileName(_capturedImage, appDir.path);
-      // _capturedImage!.renameSync(appDir.path);
+      FilesFolders().saveToFolder(capturedImage!, imageName);
     } catch (e) {
       if (kDebugMode) {
         print("Error: ${e.toString()}");
@@ -292,8 +204,10 @@ class _CameraAppState extends State<CameraApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (!controller.value.isInitialized) {
-      return Container();
+    if (!_isReady) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
     return SafeArea(
       child: Scaffold(body: LayoutBuilder(
@@ -393,7 +307,7 @@ class _CameraAppState extends State<CameraApp> {
                     children: [
                       GestureDetector(
                         onTap: () {},
-                        child: _capturedImage == null
+                        child: capturedImage == null
                             ? Container(
                                 height: 60,
                                 width: 60,
@@ -405,7 +319,7 @@ class _CameraAppState extends State<CameraApp> {
                                 height: 60,
                                 width: 60,
                                 child: Image.file(
-                                  _capturedImage!,
+                                  File(capturedImage!.path),
                                   fit: BoxFit.cover,
                                 ),
                               ),
