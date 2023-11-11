@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
               ),
           enterPatientDetails: (context) => const EnterPatientDetails(),
           enterDiagnosticData: (context) => const DiagnosticData(patientId: ''),
+          tableFunctions: (context) => const TableFunctions(),
         },
       ),
     );

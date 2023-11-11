@@ -1,5 +1,7 @@
 import 'package:CiARADS/camera/camera.dart';
+import 'package:CiARADS/camera/files_folders.dart';
 import 'package:CiARADS/constants/routes.dart';
+import 'package:CiARADS/global.dart';
 import 'package:CiARADS/main.dart';
 import 'package:CiARADS/views/widgets/credits.dart';
 import 'package:CiARADS/views/widgets/dropdown_menu.dart';
@@ -20,10 +22,10 @@ class DiagnosticData extends StatefulWidget {
 }
 
 class _DiagnosticDataState extends State<DiagnosticData> {
-  bool isLugolIodineFilled = false;
+  bool isLugolIodineFilled = true;
   bool isNormalSalineFilled = true;
   bool isGreenFilterFilled = true;
-  bool isAceticAcidFilled = false;
+  bool isAceticAcidFilled = true;
 
   bool _checkForAllFilled() {
     if (isLugolIodineFilled == false ||
@@ -140,6 +142,91 @@ class _DiagnosticDataState extends State<DiagnosticData> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    const Text(
+                      "Click to capture images:\n",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    ButtonBar(
+                      alignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                            onPressed: isGreenFilterFilled
+                                ? () {
+                                    Global.testName = greenFilter;
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => CameraApp(
+                                                  cameras: cameras,
+                                                  id: pid,
+                                                  test: greenFilter,
+                                                )));
+                                  }
+                                : null,
+                            child: const Text("Green Filter")),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton(
+                            onPressed: isAceticAcidFilled
+                                ? () {
+                                    Global.testName = aceticAcid;
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => CameraApp(
+                                                  cameras: cameras,
+                                                  id: pid,
+                                                  test: aceticAcid,
+                                                )));
+                                  }
+                                : null,
+                            child: const Text("Acetic acid")),
+                      ],
+                    ),
+                    ButtonBar(
+                      alignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                            onPressed: isLugolIodineFilled
+                                ? () {
+                                    Global.testName = lugolIodine;
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => CameraApp(
+                                                  id: pid,
+                                                  test: lugolIodine,
+                                                  cameras: cameras,
+                                                )));
+                                  }
+                                : null,
+                            child: const Text("Lugol Iodine")),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton(
+                            onPressed: isNormalSalineFilled
+                                ? () {
+                                    Global.testName = normalSaline;
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => CameraApp(
+                                                  id: pid,
+                                                  test: normalSaline,
+                                                  cameras: cameras,
+                                                )));
+                                  }
+                                : null,
+                            child: const Text("Normal Saline")),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Divider(
+                      thickness: 2,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Row(
                       children: [
                         DropDownMenu(
@@ -239,87 +326,6 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                       controller: histopathologyReportController,
                     ),
                     const SizedBox(
-                      height: 20,
-                    ),
-                    const Divider(
-                      thickness: 2,
-                    ),
-                    const Text(
-                      "Click to capture images:\n",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                            onPressed: isLugolIodineFilled
-                                ? () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => CameraApp(
-                                                  id: pid,
-                                                  test: lugolIodine,
-                                                  cameras: cameras,
-                                                )));
-                                  }
-                                : null,
-                            child: const Text("Lugol Iodine")),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        ElevatedButton(
-                            onPressed: isNormalSalineFilled
-                                ? () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => CameraApp(
-                                                  id: pid,
-                                                  test: normalSaline,
-                                                  cameras: cameras,
-                                                )));
-                                  }
-                                : null,
-                            child: const Text("Normal Saline")),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                            onPressed: isGreenFilterFilled
-                                ? () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => CameraApp(
-                                                  cameras: cameras,
-                                                  id: pid,
-                                                  test: greenFilter,
-                                                )));
-                                  }
-                                : null,
-                            child: const Text("Green Filter")),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        ElevatedButton(
-                            onPressed: isAceticAcidFilled
-                                ? () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => CameraApp(
-                                                  cameras: cameras,
-                                                  id: pid,
-                                                  test: aceticAcid,
-                                                )));
-                                  }
-                                : null,
-                            child: const Text("Acetic acid")),
-                      ],
-                    ),
-                    const SizedBox(
                       height: 40,
                     ),
                     ElevatedButton(
@@ -338,6 +344,9 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                                         msg: "Saving diagnostic data");
 
                                     _saveToDB();
+
+                                    FilesFolders()
+                                        .saveImagePathsToDB(widget.patientId);
                                   });
                                   Navigator.of(context)
                                       .pushReplacementNamed(home);

@@ -2,6 +2,7 @@ import 'package:CiARADS/constants/constants_export.dart';
 import 'package:CiARADS/view_model/view_model.dart';
 import 'package:CiARADS/views/patient_view.dart';
 import 'package:CiARADS/views/views_export.dart';
+import 'package:CiARADS/views/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,6 +43,13 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text("CiARADS score"),
+          actions: [
+            IconButton(
+                onPressed: () async {
+                  Navigator.of(context).pushNamed(tableFunctions);
+                },
+                icon: const Icon(Icons.more_vert))
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -132,9 +140,17 @@ class _HomeState extends State<Home> {
                             viewModel.setId(patientIdController.text);
                             viewModel.getData();
 
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => PatientView(
-                                    patient: viewModel.patientModel[0])));
+                            // TODO: Not working for patient not available
+                            if (viewModel.patientModel.isNotEmpty) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => PatientView(
+                                      patient: viewModel.patientModel[0])));
+                            } else {
+                              showAlertDialog(
+                                  context: context,
+                                  title: "Patient not found",
+                                  description: "");
+                            }
 
                             patientIdController.clear();
                           });

@@ -1,5 +1,5 @@
+import 'dart:collection';
 import 'package:CiARADS/database/database_export.dart';
-import 'package:CiARADS/views/views_export.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sqflite/sqflite.dart' as sql;
@@ -32,7 +32,6 @@ class PatientDB {
 
       Fluttertoast.showToast(msg: "Creating table: $tableName");
     } catch (e) {
-      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
@@ -43,8 +42,8 @@ class PatientDB {
     try {
       final database = await DatabaseService().database;
       await database.delete(tableName);
+      Fluttertoast.showToast(msg: "Deleting table: $tableName");
     } catch (e) {
-      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
@@ -57,7 +56,6 @@ class PatientDB {
       final database = await DatabaseService().database;
       await database.insert(tableName, patientData);
     } catch (e) {
-      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
@@ -90,7 +88,6 @@ class PatientDB {
         WHERE $primaryKey = '$patientId' 
         """, dataList);
     } catch (e) {
-      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
@@ -100,8 +97,11 @@ class PatientDB {
   Future<void> addImagesPaths(
       {required String patientId,
       required Map<String, dynamic> imagePaths}) async {
+    var sortedByKeyMap = SplayTreeMap<String, dynamic>.from(
+        imagePaths, ((key1, key2) => key1.compareTo(key2)));
+
     List<String> paths = [];
-    imagePaths.forEach((key, value) {
+    sortedByKeyMap.forEach((key, value) {
       paths.add(value);
     });
 
@@ -114,14 +114,13 @@ class PatientDB {
       final database = await DatabaseService().database;
       await database.rawUpdate("""
         UPDATE $tableName SET
-        $lugolIodineImagesPath = ?,
+        $aceticAcidImagesPath = ?,
         $greenFilterImagesPath = ?,
-        $normalSalineImagesPath = ?,
-        $aceticAcidImagesPath = ?
-        WHERE $primaryKey = '$patientId' 
-      """);
+        $lugolIodineImagesPath = ?,
+        $normalSalineImagesPath = ?
+        WHERE $primaryKey = '$patientId'
+        """, paths);
     } catch (e) {
-      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
@@ -130,7 +129,7 @@ class PatientDB {
 
   Future<void> seeTable() async {
     final database = await DatabaseService().database;
-    var table = await database.rawQuery("SELECT * FROM $tableName");
+    var table = await database.rawQuery("PRAGMA table_info($tableName)");
     if (kDebugMode) {
       print(table);
     }
@@ -139,12 +138,10 @@ class PatientDB {
   Future<void> removePatientData({required String patientId}) async {
     try {
       final database = await DatabaseService().database;
-      await database.execute("""
-      DELETE FROM $tableName WHERE $primaryKey = '$patientId'
+      await database.rawQuery("""
       DELETE FROM $tableName WHERE $primaryKey = '$patientId'
       """);
     } catch (e) {
-      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }
@@ -162,7 +159,6 @@ class PatientDB {
         conflictAlgorithm: ConflictAlgorithm.rollback,
       );
     } catch (e) {
-      ErrorWidget(errorMessage: e.toString());
       if (kDebugMode) {
         print(e.toString());
       }

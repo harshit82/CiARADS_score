@@ -16,10 +16,10 @@ class Patient {
   final int total_score;
   final String biopsy_taken;
   final String histopathology_report;
-  final String lugolIodineImagesPath;
-  final String greenFilterImagesPath;
-  final String normalSalineImagesPath;
-  final String aceticAcidImagesPath;
+  final String acetic_acid_img_path;
+  final String green_filter_img_path;
+  final String lugol_iodine_img_path;
+  final String normal_saline_img_path;
 
   Patient({
     required this.patient_name,
@@ -35,10 +35,10 @@ class Patient {
     required this.total_score,
     required this.biopsy_taken,
     required this.histopathology_report,
-    required this.lugolIodineImagesPath,
-    required this.greenFilterImagesPath,
-    required this.normalSalineImagesPath,
-    required this.aceticAcidImagesPath,
+    required this.lugol_iodine_img_path,
+    required this.green_filter_img_path,
+    required this.normal_saline_img_path,
+    required this.acetic_acid_img_path,
   });
 
   Patient copyWith({
@@ -55,10 +55,10 @@ class Patient {
     int? total_score,
     String? biopsy_taken,
     String? histopathology_report,
-    String? lugolIodineImagesPath,
-    String? greenFilterImagesPath,
-    String? normalSalineImagesPath,
-    String? aceticAcidImagesPath,
+    String? lugol_iodine_img_path,
+    String? green_filter_img_path,
+    String? normal_saline_img_path,
+    String? acetic_acid_img_path,
   }) {
     return Patient(
       patient_name: patient_name ?? this.patient_name,
@@ -75,13 +75,13 @@ class Patient {
       biopsy_taken: biopsy_taken ?? this.biopsy_taken,
       histopathology_report:
           histopathology_report ?? this.histopathology_report,
-      lugolIodineImagesPath:
-          lugolIodineImagesPath ?? this.lugolIodineImagesPath,
-      greenFilterImagesPath:
-          greenFilterImagesPath ?? this.greenFilterImagesPath,
-      normalSalineImagesPath:
-          normalSalineImagesPath ?? this.normalSalineImagesPath,
-      aceticAcidImagesPath: aceticAcidImagesPath ?? this.aceticAcidImagesPath,
+      lugol_iodine_img_path:
+          lugol_iodine_img_path ?? this.lugol_iodine_img_path,
+      green_filter_img_path:
+          green_filter_img_path ?? this.green_filter_img_path,
+      normal_saline_img_path:
+          normal_saline_img_path ?? this.normal_saline_img_path,
+      acetic_acid_img_path: acetic_acid_img_path ?? this.acetic_acid_img_path,
     );
   }
 
@@ -101,10 +101,10 @@ class Patient {
     result.addAll({'total_score': total_score});
     result.addAll({'biopsy_taken': biopsy_taken});
     result.addAll({'histopathology_report': histopathology_report});
-    result.addAll({'lugolIodineImagesPath': lugolIodineImagesPath});
-    result.addAll({'greenFilterImagesPath': greenFilterImagesPath});
-    result.addAll({'normalSalineImagesPath': normalSalineImagesPath});
-    result.addAll({'aceticAcidImagesPath': aceticAcidImagesPath});
+    result.addAll({'lugol_iodine_img_path': lugol_iodine_img_path});
+    result.addAll({'green_filter_img_path': green_filter_img_path});
+    result.addAll({'normal_saline_img_path': normal_saline_img_path});
+    result.addAll({'acetic_acid_img_path': acetic_acid_img_path});
 
     return result;
   }
@@ -124,10 +124,10 @@ class Patient {
       total_score: map['total_score']?.toInt() ?? 0,
       biopsy_taken: map['biopsy_taken'] ?? '',
       histopathology_report: map['histopathology_report'] ?? '',
-      lugolIodineImagesPath: map['lugolIodineImagesPath'] ?? '',
-      greenFilterImagesPath: map['greenFilterImagesPath'] ?? '',
-      normalSalineImagesPath: map['normalSalineImagesPath'] ?? '',
-      aceticAcidImagesPath: map['aceticAcidImagesPath'] ?? '',
+      lugol_iodine_img_path: map['lugol_iodine_img_path'] ?? '',
+      green_filter_img_path: map['green_filter_img_path'] ?? '',
+      normal_saline_img_path: map['normal_saline_img_path'] ?? '',
+      acetic_acid_img_path: map['acetic_acid_img_path'] ?? '',
     );
   }
 
@@ -138,7 +138,7 @@ class Patient {
 
   @override
   String toString() {
-    return 'Patient(patient_name: $patient_name, patient_id: $patient_id, patient_age: $patient_age, doctor_name: $doctor_name, hospital_name: $hospital_name, margin_and_surface: $margin_and_surface, vessel: $vessel, lesion_size: $lesion_size, acetic_acid: $acetic_acid, lugol_iodine: $lugol_iodine, total_score: $total_score, biopsy_taken: $biopsy_taken, histopathology_report: $histopathology_report, lugolIodineImagesPath: $lugolIodineImagesPath, greenFilterImagesPath: $greenFilterImagesPath, normalSalineImagesPath: $normalSalineImagesPath, aceticAcidImagesPath: $aceticAcidImagesPath)';
+    return 'Patient(patient_name: $patient_name, patient_id: $patient_id, patient_age: $patient_age, doctor_name: $doctor_name, hospital_name: $hospital_name, margin_and_surface: $margin_and_surface, vessel: $vessel, lesion_size: $lesion_size, acetic_acid: $acetic_acid, lugol_iodine: $lugol_iodine, total_score: $total_score, biopsy_taken: $biopsy_taken, histopathology_report: $histopathology_report, lugol_iodine_img_path: $lugol_iodine_img_path, green_filter_img_path: $green_filter_img_path, normal_saline_img_path: $normal_saline_img_path, acetic_acid_img_path: $acetic_acid_img_path)';
   }
 
   @override
@@ -159,10 +159,10 @@ class Patient {
         other.total_score == total_score &&
         other.biopsy_taken == biopsy_taken &&
         other.histopathology_report == histopathology_report &&
-        other.lugolIodineImagesPath == lugolIodineImagesPath &&
-        other.greenFilterImagesPath == greenFilterImagesPath &&
-        other.normalSalineImagesPath == normalSalineImagesPath &&
-        other.aceticAcidImagesPath == aceticAcidImagesPath;
+        other.lugol_iodine_img_path == lugol_iodine_img_path &&
+        other.green_filter_img_path == green_filter_img_path &&
+        other.normal_saline_img_path == normal_saline_img_path &&
+        other.acetic_acid_img_path == acetic_acid_img_path;
   }
 
   @override
@@ -180,9 +180,9 @@ class Patient {
         total_score.hashCode ^
         biopsy_taken.hashCode ^
         histopathology_report.hashCode ^
-        lugolIodineImagesPath.hashCode ^
-        greenFilterImagesPath.hashCode ^
-        normalSalineImagesPath.hashCode ^
-        aceticAcidImagesPath.hashCode;
+        lugol_iodine_img_path.hashCode ^
+        green_filter_img_path.hashCode ^
+        normal_saline_img_path.hashCode ^
+        acetic_acid_img_path.hashCode;
   }
 }

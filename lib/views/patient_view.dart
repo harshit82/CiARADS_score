@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:CiARADS/pdf/pdf.dart';
 import 'package:CiARADS/views/views_export.dart';
 import 'package:flutter/material.dart';
 import 'package:CiARADS/model/patient.dart';
@@ -15,8 +17,10 @@ class PatientView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Fluttertoast.showToast(msg: "Downloading PDF");
+            onPressed: () async {
+              Fluttertoast.showToast(msg: "Generating PDF");
+              File pdfFile = await PdfApi.generatePdf(patient);
+              PdfApi.openFile(pdfFile);
             },
             child: const Icon(Icons.picture_as_pdf)),
         appBar: AppBar(
@@ -53,11 +57,9 @@ class PatientView extends StatelessWidget {
               const SizedBox(height: 2),
               Text("Histopathology Report: ${patient.histopathology_report}"),
               const SizedBox(height: 2),
-              // const Text("Acetic acid images"),
-              //  Image.memory(
-              //  DatabaseService()
-              //         .loadImage(aceticAcidImagesPath),
-              //     fit: BoxFit.cover),
+              //const Text("Acetic acid images"),
+              // Image.memory(DatabaseService().loadImage(aceticAcidImagesPath),
+              //     width: 50, height: 50, fit: BoxFit.cover),
               // const SizedBox(height: 2),
               // const Text("Normal saline images"),
               // Image.memory(
