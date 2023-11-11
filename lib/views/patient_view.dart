@@ -28,57 +28,138 @@ class PatientView extends StatelessWidget {
           centerTitle: true,
         ),
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
+          padding: const EdgeInsets.all(10.0),
+          child: SingleChildScrollView(
             child: Column(children: [
-              Text("Patient Name: ${patient.patient_name}"),
-              const SizedBox(height: 2),
-              Text("Patient ID: ${patient.patient_id}"),
-              const SizedBox(height: 2),
-              Text("Patient Age: ${patient.patient_age}"),
-              const SizedBox(height: 2),
-              Text("Doctor's Name: ${patient.doctor_name}"),
-              const SizedBox(height: 2),
-              Text("Hospital Name: ${patient.hospital_name}"),
-              const SizedBox(height: 2),
-              Text("Margin and Surface: ${patient.margin_and_surface}"),
-              const SizedBox(height: 2),
-              Text("Vessel: ${patient.vessel}"),
-              const SizedBox(height: 2),
-              Text("Lesion Size: ${patient.lesion_size}"),
-              const SizedBox(height: 2),
-              Text("Acetic Acid: ${patient.acetic_acid}"),
-              const SizedBox(height: 2),
-              Text("Lugol Iodine: ${patient.lugol_iodine}"),
-              const SizedBox(height: 2),
-              Text("Total Score: ${patient.total_score}"),
-              const SizedBox(height: 2),
-              Text("Biopsy Taken: ${patient.biopsy_taken}"),
-              const SizedBox(height: 2),
-              Text("Histopathology Report: ${patient.histopathology_report}"),
-              const SizedBox(height: 2),
-              //const Text("Acetic acid images"),
-              // Image.memory(DatabaseService().loadImage(aceticAcidImagesPath),
-              //     width: 50, height: 50, fit: BoxFit.cover),
-              // const SizedBox(height: 2),
-              // const Text("Normal saline images"),
-              // Image.memory(
-              //     DatabaseService()
-              //         .loadImage(normalSalineImagesPath),
-              //     fit: BoxFit.cover),
-              // const SizedBox(height: 2),
-              // const Text("Lugol acid images"),
-              // Image.memory(
-              //     DatabaseService()
-              //         .loadImage(lugolIodineImagesPath),
-              //     fit: BoxFit.cover),
-              // const SizedBox(height: 2),
-              // const Text("Green filter images"),
-              // Image.memory(
-              //     DatabaseService()
-              //         .loadImage(greenFilterImagesPath),
-              //     fit: BoxFit.cover),
-
+              Table(
+                border: TableBorder.all(color: Colors.grey),
+                children: [
+                  TableRow(children: [
+                    const Text("Patient name:"),
+                    Text(patient.patient_name)
+                  ]),
+                  TableRow(children: [
+                    const Text("Patient age:"),
+                    Text(patient.patient_age.toString())
+                  ]),
+                  TableRow(children: [
+                    const Text("Doctor name:"),
+                    Text(patient.doctor_name)
+                  ]),
+                  TableRow(children: [
+                    const Text("Hospital name:"),
+                    Text(patient.hospital_name)
+                  ]),
+                  TableRow(children: [
+                    const Text("Margin and Surface:"),
+                    Text(patient.margin_and_surface.toString())
+                  ]),
+                  TableRow(children: [
+                    const Text("Vessel:"),
+                    Text(patient.vessel.toString())
+                  ]),
+                  TableRow(children: [
+                    const Text("Lesion Size:"),
+                    Text(patient.lesion_size.toString())
+                  ]),
+                  TableRow(children: [
+                    const Text("Acetic Acid:"),
+                    Text(patient.acetic_acid.toString())
+                  ]),
+                  TableRow(children: [
+                    const Text("Lugol Iodine:"),
+                    Text(patient.lugol_iodine.toString())
+                  ]),
+                  TableRow(children: [
+                    const Text("Total Score:"),
+                    Text(patient.total_score.toString())
+                  ]),
+                  TableRow(children: [
+                    const Text("Biopsy Taken:"),
+                    Text(patient.biopsy_taken)
+                  ]),
+                  TableRow(children: [
+                    const Text("Histopathology Report:"),
+                    Text(patient.histopathology_report)
+                  ]),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text("Acetic acid image"),
+                      const SizedBox(width: 8),
+                      Image.file(
+                        File(patient.acetic_acid_img_path),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text("Green filter image"),
+                      const SizedBox(width: 8),
+                      Image.file(
+                        File(patient.green_filter_img_path),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text("Lugol iodine image"),
+                      const SizedBox(width: 8),
+                      Image.file(
+                        File(patient.lugol_iodine_img_path),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text("Normal saline image"),
+                      const SizedBox(width: 8),
+                      Image.file(
+                        File(patient.normal_saline_img_path),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const Align(alignment: Alignment.bottomCenter, child: Credits()),
             ]),
           ),
