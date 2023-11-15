@@ -18,10 +18,10 @@ class ShowPatientDetails extends StatelessWidget {
         appBar: AppBar(centerTitle: true, title: const Text("Patient Report")),
         body: Padding(
           padding: const EdgeInsets.all(20),
-          child: viewModel.patientModel.isNotEmpty
+          child: viewModel.patientModelList!.isNotEmpty
               ? ListView.separated(
                   itemBuilder: ((context, index) {
-                    Patient patient = viewModel.patientModel[index];
+                    Patient patient = viewModel.patientModelList![index]!;
                     return InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -40,7 +40,7 @@ class ShowPatientDetails extends StatelessWidget {
                   }),
                   separatorBuilder: (BuildContext context, int index) =>
                       const Divider(),
-                  itemCount: viewModel.patientModel.length,
+                  itemCount: viewModel.patientModelList!.length,
                 )
               : const Padding(
                   padding: EdgeInsets.all(10.0),

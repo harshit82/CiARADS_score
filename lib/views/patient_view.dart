@@ -24,7 +24,7 @@ class PatientView extends StatelessWidget {
             },
             child: const Icon(Icons.picture_as_pdf)),
         appBar: AppBar(
-          title: Text(patient.patient_name),
+          title: Text(patient.patient_name.toString()),
           centerTitle: true,
         ),
         body: Padding(
@@ -36,7 +36,7 @@ class PatientView extends StatelessWidget {
                 children: [
                   TableRow(children: [
                     const Text("Patient name:"),
-                    Text(patient.patient_name)
+                    Text(patient.patient_name.toString())
                   ]),
                   TableRow(children: [
                     const Text("Patient age:"),
@@ -44,11 +44,11 @@ class PatientView extends StatelessWidget {
                   ]),
                   TableRow(children: [
                     const Text("Doctor name:"),
-                    Text(patient.doctor_name)
+                    Text(patient.doctor_name.toString())
                   ]),
                   TableRow(children: [
                     const Text("Hospital name:"),
-                    Text(patient.hospital_name)
+                    Text(patient.hospital_name.toString())
                   ]),
                   TableRow(children: [
                     const Text("Margin and Surface:"),
@@ -76,11 +76,11 @@ class PatientView extends StatelessWidget {
                   ]),
                   TableRow(children: [
                     const Text("Biopsy Taken:"),
-                    Text(patient.biopsy_taken)
+                    Text(patient.biopsy_taken.toString())
                   ]),
                   TableRow(children: [
                     const Text("Histopathology Report:"),
-                    Text(patient.histopathology_report)
+                    Text(patient.histopathology_report.toString())
                   ]),
                 ],
               ),
@@ -92,13 +92,14 @@ class PatientView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       const Text("Acetic acid image"),
-                      const SizedBox(width: 8),
-                      Image.file(
-                        File(patient.acetic_acid_img_path),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
+                      patient.acetic_acid_img_path != null
+                          ? Image.file(
+                              File(patient.acetic_acid_img_path.toString()),
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            )
+                          : const SizedBox(),
                     ],
                   ),
                 ),
@@ -111,13 +112,14 @@ class PatientView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       const Text("Green filter image"),
-                      const SizedBox(width: 8),
-                      Image.file(
-                        File(patient.green_filter_img_path),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
+                      patient.green_filter_img_path != null
+                          ? Image.file(
+                              File(patient.green_filter_img_path.toString()),
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            )
+                          : const SizedBox(),
                     ],
                   ),
                 ),
@@ -130,13 +132,14 @@ class PatientView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       const Text("Lugol iodine image"),
-                      const SizedBox(width: 8),
-                      Image.file(
-                        File(patient.lugol_iodine_img_path),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
+                      patient.lugol_iodine_img_path != null
+                          ? Image.file(
+                              File(patient.lugol_iodine_img_path.toString()),
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            )
+                          : const SizedBox(),
                     ],
                   ),
                 ),
@@ -149,13 +152,14 @@ class PatientView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       const Text("Normal saline image"),
-                      const SizedBox(width: 8),
-                      Image.file(
-                        File(patient.normal_saline_img_path),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
+                      patient.normal_saline_img_path != null
+                          ? Image.file(
+                              File(patient.normal_saline_img_path.toString()),
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            )
+                          : const SizedBox(),
                     ],
                   ),
                 ),

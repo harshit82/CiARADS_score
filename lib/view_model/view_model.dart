@@ -4,12 +4,14 @@ import 'package:flutter/foundation.dart';
 
 class ViewModel extends ChangeNotifier {
   bool _loading = false;
-  List<Patient> _patientModel = [];
+  List<Patient?>? _patientModelList = [];
   String _id = '';
+  Patient? _patientModel;
 
   bool get loading => _loading;
-  List<Patient> get patientModel => _patientModel;
+  List<Patient?>? get patientModelList => _patientModelList;
   String get id => _id;
+  Patient? get patientModel => _patientModel;
 
   ViewModel() {
     getData();
@@ -20,8 +22,13 @@ class ViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setPatientModel(List<Patient> patientModel) {
-    _patientModel = patientModel;
+  void setPatientModelList(List<Patient?>? patientModel) {
+    _patientModelList = patientModel;
+    notifyListeners();
+  }
+
+  void setPatientModel(Patient? patient) {
+    _patientModel = patient;
     notifyListeners();
   }
 
@@ -36,31 +43,39 @@ class ViewModel extends ChangeNotifier {
   void getData() async {
     setLoading(true);
 
-    late List<Map<String, dynamic>> dataList;
-
     if (id == '') {
-      dataList = await PatientDB.getAllPatientData();
+      List<Map<String, dynamic>> dataList = await PatientDB.getAllPatientData();
+
+      if (kDebugMode) {
+        print("Data List =\n");
+        print(dataList);
+      }
+
+      _patientModelList = List.generate(
+          dataList.length, (index) => Patient.fromMap(dataList[index]));
+
+      if (kDebugMode) {
+        print("Patient Model =\n");
+        print(_patientModelList);
+      }
+
+      setPatientModelList(_patientModelList);
     } else {
       if (kDebugMode) {
         print("Id for searching = $id");
       }
-      dataList = await PatientDB.getPatientData(patientId: id);
+      Map<String, dynamic> dataMap =
+          await PatientDB.getPatientData(patientId: id);
+
+      if (kDebugMode) {
+        print("Data Map for $id =");
+        print(dataMap);
+      }
+
+      Patient? patient = Patient.fromMap(dataMap);
+      setPatientModel(patient);
     }
 
-    if (kDebugMode) {
-      print("Data List =\n");
-      print(dataList);
-    }
-
-    _patientModel = List.generate(
-        dataList.length, (index) => Patient.fromMap(dataList[index]));
-
-    if (kDebugMode) {
-      print("Patient Model =\n");
-      print(_patientModel);
-    }
-
-    setPatientModel(_patientModel);
     setLoading(false);
   }
 }

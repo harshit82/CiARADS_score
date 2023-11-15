@@ -45,3 +45,7 @@ app.*.map.json
 
 # dev added
 TODO.md
+db_isolate.dart
+camera_isolate.dart
+database_export.dart
+camera_export.dart

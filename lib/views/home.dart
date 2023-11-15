@@ -38,6 +38,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     ViewModel viewModel = context.watch<ViewModel>();
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -122,38 +123,48 @@ class _HomeState extends State<Home> {
                 TextFormField(
                   controller: patientIdController,
                   decoration: InputDecoration(
-                      label: const Text("Search by Patient Id"),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
+                    label: const Text("Search by Patient Id"),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0)))),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                    ),
+                  ),
                   onPressed: isButtonActive
                       ? () {
-                          setState(() {
-                            isButtonActive = false;
+                          setState(
+                            () {
+                              isButtonActive = false;
 
-                            viewModel.setId(patientIdController.text);
-                            viewModel.getData();
+                              viewModel.setId(patientIdController.text);
+                              viewModel.getData();
 
-                            // TODO: Not working for patient not available
-                            if (viewModel.patientModel.isNotEmpty) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => PatientView(
-                                      patient: viewModel.patientModel[0])));
-                            } else {
-                              showAlertDialog(
-                                  context: context,
-                                  title: "Patient not found",
-                                  description: "");
-                            }
+                              final patient = viewModel.patientModel;
 
-                            patientIdController.clear();
-                          });
+                              if (patient != null) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PatientView(patient: patient),
+                                  ),
+                                );
+                              } else {
+                                showAlertDialog(
+                                    context: context,
+                                    title: "Patient not found",
+                                    description: "");
+                              }
+                              patientIdController.clear();
+                            },
+                          );
                         }
                       : null,
                   child: const Text("Search"),

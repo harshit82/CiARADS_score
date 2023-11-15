@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:CiARADS/database/database_export.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -45,13 +43,13 @@ class DatabaseService {
     await sql.deleteDatabase(databasePath);
   }
 
-  Future<Uint8List> loadImage(String image) async {
-    final path = await fullPath;
-    sql.Database db = await sql.openDatabase(path);
-    List<Map<String, dynamic>> rows =
-        await db.rawQuery('SELECT $image FROM $tableName');
-    String base64Image = rows[0][image];
-    await db.close();
-    return base64Decode(base64Image);
-  }
+  // Future<Uint8List> loadImage(String image) async {
+  //   final path = await fullPath;
+  //   sql.Database db = await sql.openDatabase(path);
+  //   List<Map<String, dynamic>> rows =
+  //       await db.rawQuery('SELECT $image FROM $tableName');
+  //   String base64Image = rows[0][image];
+  //   await db.close();
+  //   return base64Decode(base64Image);
+  // }
 }

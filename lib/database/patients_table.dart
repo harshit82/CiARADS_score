@@ -97,6 +97,7 @@ class PatientDB {
   Future<void> addImagesPaths(
       {required String patientId,
       required Map<String, dynamic> imagePaths}) async {
+    // Sorting the keys and the corresponding data in ascending order
     var sortedByKeyMap = SplayTreeMap<String, dynamic>.from(
         imagePaths, ((key1, key2) => key1.compareTo(key2)));
 
@@ -165,7 +166,7 @@ class PatientDB {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getPatientData(
+  static Future<Map<String, dynamic>> getPatientData(
       {required String patientId}) async {
     final database = await DatabaseService().database;
     List<Map<String, dynamic>> patientData = await database
@@ -173,7 +174,10 @@ class PatientDB {
     if (kDebugMode) {
       print(patientData);
     }
-    return patientData;
+    if (patientData.isNotEmpty) {
+      return patientData.first;
+    }
+    return {};
   }
 
   static Future<List<Map<String, dynamic>>> getAllPatientData() async {

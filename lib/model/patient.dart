@@ -3,23 +3,23 @@
 import 'dart:convert';
 
 class Patient {
-  final String patient_name;
-  final String patient_id;
-  final int patient_age;
-  final String doctor_name;
-  final String hospital_name;
-  final int margin_and_surface;
-  final int vessel;
-  final int lesion_size;
-  final int acetic_acid;
-  final int lugol_iodine;
-  final int total_score;
-  final String biopsy_taken;
-  final String histopathology_report;
-  final String acetic_acid_img_path;
-  final String green_filter_img_path;
-  final String lugol_iodine_img_path;
-  final String normal_saline_img_path;
+  final String? patient_name;
+  final String? patient_id;
+  final int? patient_age;
+  final String? doctor_name;
+  final String? hospital_name;
+  final int? margin_and_surface;
+  final int? vessel;
+  final int? lesion_size;
+  final int? acetic_acid;
+  final int? lugol_iodine;
+  final int? total_score;
+  final String? biopsy_taken;
+  final String? histopathology_report;
+  final String? acetic_acid_img_path;
+  final String? green_filter_img_path;
+  final String? lugol_iodine_img_path;
+  final String? normal_saline_img_path;
 
   Patient({
     required this.patient_name,
@@ -35,10 +35,10 @@ class Patient {
     required this.total_score,
     required this.biopsy_taken,
     required this.histopathology_report,
-    required this.lugol_iodine_img_path,
-    required this.green_filter_img_path,
-    required this.normal_saline_img_path,
     required this.acetic_acid_img_path,
+    required this.green_filter_img_path,
+    required this.lugol_iodine_img_path,
+    required this.normal_saline_img_path,
   });
 
   Patient copyWith({
@@ -55,10 +55,10 @@ class Patient {
     int? total_score,
     String? biopsy_taken,
     String? histopathology_report,
-    String? lugol_iodine_img_path,
-    String? green_filter_img_path,
-    String? normal_saline_img_path,
     String? acetic_acid_img_path,
+    String? green_filter_img_path,
+    String? lugol_iodine_img_path,
+    String? normal_saline_img_path,
   }) {
     return Patient(
       patient_name: patient_name ?? this.patient_name,
@@ -75,59 +75,93 @@ class Patient {
       biopsy_taken: biopsy_taken ?? this.biopsy_taken,
       histopathology_report:
           histopathology_report ?? this.histopathology_report,
-      lugol_iodine_img_path:
-          lugol_iodine_img_path ?? this.lugol_iodine_img_path,
+      acetic_acid_img_path: acetic_acid_img_path ?? this.acetic_acid_img_path,
       green_filter_img_path:
           green_filter_img_path ?? this.green_filter_img_path,
+      lugol_iodine_img_path:
+          lugol_iodine_img_path ?? this.lugol_iodine_img_path,
       normal_saline_img_path:
           normal_saline_img_path ?? this.normal_saline_img_path,
-      acetic_acid_img_path: acetic_acid_img_path ?? this.acetic_acid_img_path,
     );
   }
 
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
 
-    result.addAll({'patient_name': patient_name});
-    result.addAll({'patient_id': patient_id});
-    result.addAll({'patient_age': patient_age});
-    result.addAll({'doctor_name': doctor_name});
-    result.addAll({'hospital_name': hospital_name});
-    result.addAll({'margin_and_surface': margin_and_surface});
-    result.addAll({'vessel': vessel});
-    result.addAll({'lesion_size': lesion_size});
-    result.addAll({'acetic_acid': acetic_acid});
-    result.addAll({'lugol_iodine': lugol_iodine});
-    result.addAll({'total_score': total_score});
-    result.addAll({'biopsy_taken': biopsy_taken});
-    result.addAll({'histopathology_report': histopathology_report});
-    result.addAll({'lugol_iodine_img_path': lugol_iodine_img_path});
-    result.addAll({'green_filter_img_path': green_filter_img_path});
-    result.addAll({'normal_saline_img_path': normal_saline_img_path});
-    result.addAll({'acetic_acid_img_path': acetic_acid_img_path});
+    if (patient_name != null) {
+      result.addAll({'patient_name': patient_name});
+    }
+    if (patient_id != null) {
+      result.addAll({'patient_id': patient_id});
+    }
+    if (patient_age != null) {
+      result.addAll({'patient_age': patient_age});
+    }
+    if (doctor_name != null) {
+      result.addAll({'doctor_name': doctor_name});
+    }
+    if (hospital_name != null) {
+      result.addAll({'hospital_name': hospital_name});
+    }
+    if (margin_and_surface != null) {
+      result.addAll({'margin_and_surface': margin_and_surface});
+    }
+    if (vessel != null) {
+      result.addAll({'vessel': vessel});
+    }
+    if (lesion_size != null) {
+      result.addAll({'lesion_size': lesion_size});
+    }
+    if (acetic_acid != null) {
+      result.addAll({'acetic_acid': acetic_acid});
+    }
+    if (lugol_iodine != null) {
+      result.addAll({'lugol_iodine': lugol_iodine});
+    }
+    if (total_score != null) {
+      result.addAll({'total_score': total_score});
+    }
+    if (biopsy_taken != null) {
+      result.addAll({'biopsy_taken': biopsy_taken});
+    }
+    if (histopathology_report != null) {
+      result.addAll({'histopathology_report': histopathology_report});
+    }
+    if (acetic_acid_img_path != null) {
+      result.addAll({'acetic_acid_img_path': acetic_acid_img_path});
+    }
+    if (green_filter_img_path != null) {
+      result.addAll({'green_filter_img_path': green_filter_img_path});
+    }
+    if (lugol_iodine_img_path != null) {
+      result.addAll({'lugol_iodine_img_path': lugol_iodine_img_path});
+    }
+    if (normal_saline_img_path != null) {
+      result.addAll({'normal_saline_img_path': normal_saline_img_path});
+    }
 
     return result;
   }
 
   factory Patient.fromMap(Map<String, dynamic> map) {
     return Patient(
-      patient_name: map['patient_name'] ?? '',
-      patient_id: map['patient_id'] ?? '',
-      patient_age: map['patient_age']?.toInt() ?? 0,
-      doctor_name: map['doctor_name'] ?? '',
-      hospital_name: map['hospital_name'] ?? '',
-      margin_and_surface: map['margin_and_surface']?.toInt() ?? 0,
-      vessel: map['vessel']?.toInt() ?? 0,
-      lesion_size: map['lesion_size']?.toInt() ?? 0,
-      acetic_acid: map['acetic_acid']?.toInt() ?? 0,
-      lugol_iodine: map['lugol_iodine']?.toInt() ?? 0,
-      total_score: map['total_score']?.toInt() ?? 0,
-      biopsy_taken: map['biopsy_taken'] ?? '',
-      histopathology_report: map['histopathology_report'] ?? '',
-      lugol_iodine_img_path: map['lugol_iodine_img_path'] ?? '',
-      green_filter_img_path: map['green_filter_img_path'] ?? '',
-      normal_saline_img_path: map['normal_saline_img_path'] ?? '',
-      acetic_acid_img_path: map['acetic_acid_img_path'] ?? '',
+      patient_name: map['patient_name'],
+      patient_id: map['patient_id'],
+      patient_age: map['patient_age']?.toInt(),
+      doctor_name: map['doctor_name'],
+      hospital_name: map['hospital_name'],
+      margin_and_surface: map['margin_and_surface']?.toInt(),
+      vessel: map['vessel']?.toInt(),
+      lesion_size: map['lesion_size']?.toInt(),
+      acetic_acid: map['acetic_acid']?.toInt(),
+      lugol_iodine: map['lugol_iodine']?.toInt(),
+      total_score: map['total_score']?.toInt(),
+      biopsy_taken: map['biopsy_taken'],
+      histopathology_report: map['histopathology_report'],
+      acetic_acid_img_path: map['acetic_acid_img_path'],
+      green_filter_img_path: map['green_filter_img_path'],
+      lugol_iodine_img_path: map['lugol_iodine_img_path'],
+      normal_saline_img_path: map['normal_saline_img_path'],
     );
   }
 
@@ -138,7 +172,7 @@ class Patient {
 
   @override
   String toString() {
-    return 'Patient(patient_name: $patient_name, patient_id: $patient_id, patient_age: $patient_age, doctor_name: $doctor_name, hospital_name: $hospital_name, margin_and_surface: $margin_and_surface, vessel: $vessel, lesion_size: $lesion_size, acetic_acid: $acetic_acid, lugol_iodine: $lugol_iodine, total_score: $total_score, biopsy_taken: $biopsy_taken, histopathology_report: $histopathology_report, lugol_iodine_img_path: $lugol_iodine_img_path, green_filter_img_path: $green_filter_img_path, normal_saline_img_path: $normal_saline_img_path, acetic_acid_img_path: $acetic_acid_img_path)';
+    return 'Patient(patient_name: $patient_name, patient_id: $patient_id, patient_age: $patient_age, doctor_name: $doctor_name, hospital_name: $hospital_name, margin_and_surface: $margin_and_surface, vessel: $vessel, lesion_size: $lesion_size, acetic_acid: $acetic_acid, lugol_iodine: $lugol_iodine, total_score: $total_score, biopsy_taken: $biopsy_taken, histopathology_report: $histopathology_report, acetic_acid_img_path: $acetic_acid_img_path, green_filter_img_path: $green_filter_img_path, lugol_iodine_img_path: $lugol_iodine_img_path, normal_saline_img_path: $normal_saline_img_path)';
   }
 
   @override
@@ -159,10 +193,10 @@ class Patient {
         other.total_score == total_score &&
         other.biopsy_taken == biopsy_taken &&
         other.histopathology_report == histopathology_report &&
-        other.lugol_iodine_img_path == lugol_iodine_img_path &&
+        other.acetic_acid_img_path == acetic_acid_img_path &&
         other.green_filter_img_path == green_filter_img_path &&
-        other.normal_saline_img_path == normal_saline_img_path &&
-        other.acetic_acid_img_path == acetic_acid_img_path;
+        other.lugol_iodine_img_path == lugol_iodine_img_path &&
+        other.normal_saline_img_path == normal_saline_img_path;
   }
 
   @override
@@ -180,9 +214,9 @@ class Patient {
         total_score.hashCode ^
         biopsy_taken.hashCode ^
         histopathology_report.hashCode ^
-        lugol_iodine_img_path.hashCode ^
+        acetic_acid_img_path.hashCode ^
         green_filter_img_path.hashCode ^
-        normal_saline_img_path.hashCode ^
-        acetic_acid_img_path.hashCode;
+        lugol_iodine_img_path.hashCode ^
+        normal_saline_img_path.hashCode;
   }
 }
