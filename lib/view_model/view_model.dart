@@ -17,7 +17,7 @@ class ViewModel extends ChangeNotifier {
     getData();
   }
 
-  void setLoading(bool loading) async {
+  void setLoading(bool loading) {
     _loading = loading;
     notifyListeners();
   }
@@ -44,7 +44,8 @@ class ViewModel extends ChangeNotifier {
     setLoading(true);
 
     if (id == '') {
-      List<Map<String, dynamic>> dataList = await PatientDB.getAllPatientData();
+      List<Map<String, dynamic>> dataList =
+          await PatientTable.getAllPatientData();
 
       if (kDebugMode) {
         print("Data List =\n");
@@ -65,7 +66,7 @@ class ViewModel extends ChangeNotifier {
         print("Id for searching = $id");
       }
       Map<String, dynamic> dataMap =
-          await PatientDB.getPatientData(patientId: id);
+          await PatientTable.getPatientData(patientId: id);
 
       if (kDebugMode) {
         print("Data Map for $id =");

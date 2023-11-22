@@ -47,6 +47,8 @@ class FilesFolders {
     }
   }
 
+  /// @func{_fillMap} is used to fill the map containing image paths with the correct key
+  /// the function provides the correct key to the {@map imagePaths} based on the {@var testName}
   void _fillMap(String imagePath) {
     if (kDebugMode) {
       print("Populating map");
@@ -78,7 +80,7 @@ class FilesFolders {
   }
 
   void saveImagePathsToDB(String patientId) async {
-    await PatientDB()
+    await PatientTable()
         .addImagesPaths(patientId: patientId, imagePaths: Global.imagePaths);
   }
 }

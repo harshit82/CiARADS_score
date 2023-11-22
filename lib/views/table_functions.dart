@@ -68,7 +68,7 @@ class _TableFunctionsState extends State<TableFunctions> {
                             Navigator.of(context).pop();
                           },
                           button2OnPressed: () {
-                            PatientDB().removePatientData(
+                            PatientTable().removePatientData(
                                 patientId: patientIdController.text);
                             Fluttertoast.showToast(
                                 msg:
@@ -99,7 +99,7 @@ class _TableFunctionsState extends State<TableFunctions> {
                       Navigator.of(context).pop();
                     },
                     button2OnPressed: () {
-                      PatientDB().deleteTable();
+                      PatientTable().deleteTable();
                       Fluttertoast.showToast(msg: "Deleted all patient data");
                       Navigator.of(context).pop();
                     },

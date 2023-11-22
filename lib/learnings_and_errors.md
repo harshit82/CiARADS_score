@@ -18,6 +18,7 @@ Errors:
 - PathNotFoundException (PathNotFoundException: Cannot copy file to '/esy_normal_saline/17:48:6.png', path = '/data/user/0/com.example.calposcopy/cache/CAP2144548563826572224.jpg' (OS Error: No such file or directory, errno = 2))
 - FileSystemException (FileSystemException: Cannot copy file to '#gsri%green_filter|18:6:50.jpg', path = '/data/user/0/com.example.calposcopy/cache/CAP181698039984606454.jpg' (OS Error: Read-only file system, errno = 30))
 - https://stackoverflow.com/questions/75265972/task-appcheckdebugduplicateclasses-failed
+- https://stackoverflow.com/questions/75950122/flutter-isolates-the-backgroundisolatebinarymessenger-instance-value-is-invalid
 
 Bug:
 - https://github.com/flutter/flutter/issues/21911

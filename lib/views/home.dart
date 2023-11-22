@@ -46,6 +46,9 @@ class _HomeState extends State<Home> {
           title: const Text("CiARADS score"),
           actions: [
             IconButton(
+                onPressed: () => Navigator.of(context).pushNamed(bluetooth),
+                icon: const Icon(Icons.bluetooth)),
+            IconButton(
                 onPressed: () async {
                   Navigator.of(context).pushNamed(tableFunctions);
                 },
@@ -147,7 +150,7 @@ class _HomeState extends State<Home> {
                               viewModel.setId(patientIdController.text);
                               viewModel.getData();
 
-                              final patient = viewModel.patientModel;
+                              var patient = viewModel.patientModel;
 
                               if (patient != null) {
                                 Navigator.of(context).push(

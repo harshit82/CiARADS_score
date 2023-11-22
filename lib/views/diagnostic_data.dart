@@ -119,7 +119,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
     }
 
     /// saving diagnostic data for the given patient to the DB
-    PatientDB().addDiagnosisData(
+    PatientTable().addDiagnosisData(
         patientId: widget.patientId, diagnosisData: diagnosisData);
   }
 

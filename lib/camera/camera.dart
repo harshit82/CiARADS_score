@@ -24,12 +24,10 @@ class CameraApp extends StatefulWidget {
   State<CameraApp> createState() => _CameraAppState();
 }
 
-class _CameraAppState extends State<CameraApp> {
+class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
   // camera controller
-  late CameraController controller;
+  CameraController? _cameraController;
   bool isCapturing = false;
-  // for switching camera
-  final int _selectedCameraIndex = 0;
   // for flash light
   bool _isFlashOn = false;
   // for focusing
@@ -43,8 +41,20 @@ class _CameraAppState extends State<CameraApp> {
   // to check if the camera controller is initialized
   bool _isReady = false;
 
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      _initCamera();
+    } else if (state == AppLifecycleState.paused) {
+      _cameraController?.dispose();
+    } else if (state == AppLifecycleState.inactive) {
+      _cameraController?.dispose();
+      _cameraController = null;
+    }
+  }
+
   /// {@_initCamera} initializes the camera for use
-  Future<void> _initCamera(int cameraIndex) async {
+  Future<void> _initCamera() async {
     // // camera permission handling
     PermissionStatus status = await Permission.camera.status;
     if (!status.isGranted) {
@@ -56,19 +66,20 @@ class _CameraAppState extends State<CameraApp> {
       });
     }
     // setting the camera controller to the default back camera
-    controller = CameraController(
-        widget.cameras[_selectedCameraIndex], ResolutionPreset.max,
+    _cameraController = CameraController(
+        widget.cameras.first, ResolutionPreset.max,
         enableAudio: false);
     try {
       // checking if the controller has been initialized
-      await controller.initialize().then((_) {
+      await _cameraController?.initialize().then((_) {
         _isReady = true;
         if (!mounted) {
           return;
         }
         setState(() {
           // locking orientation of the device in portrait mode
-          controller.lockCaptureOrientation(DeviceOrientation.portraitUp);
+          _cameraController
+              ?.lockCaptureOrientation(DeviceOrientation.portraitUp);
         });
       }).catchError((Object e) {
         if (e is CameraException) {
@@ -103,14 +114,15 @@ class _CameraAppState extends State<CameraApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     /// invoking the {@_initCamera} function in the initState
-    _initCamera(_selectedCameraIndex);
+    _initCamera();
   }
 
   /// {@captureImage} captures the image
   void captureImage() async {
-    if (controller.value.isTakingPicture) {
+    if (_cameraController!.value.isTakingPicture) {
       return;
     }
 
@@ -120,7 +132,7 @@ class _CameraAppState extends State<CameraApp> {
       });
 
       // invoking the {@takePicture} function defined under the controller of the camera package to capture the image
-      capturedImage = await controller.takePicture();
+      capturedImage = await _cameraController?.takePicture();
       // using audio player to play the shutter sound on taking a picture
       audioPlayer.open(Audio('sound/camera_shutter.mp3'));
       audioPlayer.play();
@@ -151,12 +163,12 @@ class _CameraAppState extends State<CameraApp> {
   /// {@_toggleFlashLight} turn on/off the flash light
   void _toggleFlashLight() {
     if (_isFlashOn == true) {
-      controller.setFlashMode(FlashMode.off);
+      _cameraController?.setFlashMode(FlashMode.off);
       setState(() {
         _isFlashOn = false;
       });
     } else {
-      controller.setFlashMode(FlashMode.torch);
+      _cameraController?.setFlashMode(FlashMode.torch);
       setState(() {
         _isFlashOn = true;
       });
@@ -167,18 +179,18 @@ class _CameraAppState extends State<CameraApp> {
   void zoomCamera(double value) {
     setState(() {
       _currentZoom = value;
-      controller.setZoomLevel(value);
+      _cameraController?.setZoomLevel(value);
     });
   }
 
   // allows the user to focus at a specific point in on the camera screen
   Future<void> _setFocusPoint(Offset point) async {
-    if (controller.value.isInitialized) {
+    if (_cameraController!.value.isInitialized) {
       try {
         final double x = point.dx.clamp(0.0, 1.0);
         final double y = point.dy.clamp(0.0, 1.0);
-        await controller.setFocusPoint(Offset(x, y));
-        await controller.setFocusMode(FocusMode.auto);
+        await _cameraController?.setFocusPoint(Offset(x, y));
+        await _cameraController?.setFocusMode(FocusMode.auto);
         setState(() {
           _focusPoint = Offset(x, y);
         });
@@ -198,7 +210,8 @@ class _CameraAppState extends State<CameraApp> {
 
   @override
   void dispose() {
-    controller.dispose();
+    _cameraController?.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -246,7 +259,7 @@ class _CameraAppState extends State<CameraApp> {
                 top: 50,
                 bottom: 0,
                 child: AspectRatio(
-                  aspectRatio: controller.value.aspectRatio,
+                  aspectRatio: _cameraController!.value.aspectRatio,
                   child: GestureDetector(
                       onTapDown: (TapDownDetails details) {
                         final Offset tapPosition = details.localPosition;
@@ -255,7 +268,7 @@ class _CameraAppState extends State<CameraApp> {
                             tapPosition.dy / constraints.maxHeight);
                         _setFocusPoint(relativeTapPosition);
                       },
-                      child: CameraPreview(controller)),
+                      child: CameraPreview(_cameraController!)),
                 ),
               ),
               Positioned(

@@ -3,6 +3,10 @@
 
 Cervical cancer diagnosis using images from the mobile phone.
 
-## Getting Started
+## About
 
 This project is intended for medical usage.
+
+## Credits
+
+Made by Harshit Tathagat at LEAP labs IIIT-Kancheepuram, Chennai, India.

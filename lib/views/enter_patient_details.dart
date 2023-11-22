@@ -107,7 +107,7 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
       print(patientDataMap);
     }
 
-    PatientDB().addPatientData(patientData: patientDataMap);
+    PatientTable().addPatientData(patientData: patientDataMap);
   }
 
   @override

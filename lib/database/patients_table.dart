@@ -1,21 +1,25 @@
 import 'dart:collection';
 import 'package:CiARADS/database/database_export.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:sqflite/sqlite_api.dart';
 
-class PatientDB {
+class PatientTable {
+  final token = RootIsolateToken.instance;
   Future<void> createTable(sql.Database database) async {
     try {
-      await database.execute("""
+      await compute((dynamic token) async {
+        BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+        database.execute("""
           CREATE TABLE $tableName(
           $patientId TEXT PRIMARY KEY, 
           $patientName TEXT NOT NULL, 
           $patientAge INTEGER NOT NULL, 
           $doctorName TEXT NOT NULL, 
           $hospitalName TEXT NOT NULL,
-          $marginAndSurface INTEGER,
+          $marginAndSurface INTEGER,C
           $vessel INTEGER,
           $lesionSize INTEGER,
           $aceticAcid INTEGER,
@@ -29,6 +33,7 @@ class PatientDB {
           $aceticAcidImagesPath TEXT
           )
           """);
+      }, token);
 
       Fluttertoast.showToast(msg: "Creating table: $tableName");
     } catch (e) {
@@ -40,8 +45,12 @@ class PatientDB {
 
   Future<void> deleteTable() async {
     try {
-      final database = await DatabaseService().database;
-      await database.delete(tableName);
+      await compute((dynamic token) async {
+        BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+        final database = await DatabaseService().database;
+        await database.delete(tableName);
+      }, token);
+
       Fluttertoast.showToast(msg: "Deleting table: $tableName");
     } catch (e) {
       if (kDebugMode) {
@@ -53,8 +62,11 @@ class PatientDB {
   Future<void> addPatientData(
       {required Map<String, dynamic> patientData}) async {
     try {
-      final database = await DatabaseService().database;
-      await database.insert(tableName, patientData);
+      await compute((dynamic token) async {
+        BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+        final database = await DatabaseService().database;
+        await database.insert(tableName, patientData);
+      }, token);
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
@@ -74,8 +86,10 @@ class PatientDB {
       print(dataList);
     }
     try {
-      final database = await DatabaseService().database;
-      await database.rawUpdate("""
+      await compute((dynamic token) async {
+        BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+        final database = await DatabaseService().database;
+        await database.rawUpdate("""
         UPDATE $tableName SET
         $marginAndSurface = ?,
         $vessel = ?,
@@ -87,6 +101,7 @@ class PatientDB {
         $histopathologyReport = ?
         WHERE $primaryKey = '$patientId' 
         """, dataList);
+      }, token);
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
@@ -112,8 +127,10 @@ class PatientDB {
     }
 
     try {
-      final database = await DatabaseService().database;
-      await database.rawUpdate("""
+      await compute((dynamic token) async {
+        BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+        final database = await DatabaseService().database;
+        await database.rawUpdate("""
         UPDATE $tableName SET
         $aceticAcidImagesPath = ?,
         $greenFilterImagesPath = ?,
@@ -121,6 +138,7 @@ class PatientDB {
         $normalSalineImagesPath = ?
         WHERE $primaryKey = '$patientId'
         """, paths);
+      }, token);
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
@@ -128,20 +146,27 @@ class PatientDB {
     }
   }
 
+  // @dev
   Future<void> seeTable() async {
-    final database = await DatabaseService().database;
-    var table = await database.rawQuery("PRAGMA table_info($tableName)");
-    if (kDebugMode) {
-      print(table);
-    }
+    await compute((dynamic token) async {
+      BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+      final database = await DatabaseService().database;
+      var table = await database.rawQuery("PRAGMA table_info($tableName)");
+      if (kDebugMode) {
+        print(table);
+      }
+    }, token);
   }
 
   Future<void> removePatientData({required String patientId}) async {
     try {
-      final database = await DatabaseService().database;
-      await database.rawQuery("""
+      await compute((dynamic token) async {
+        BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+        final database = await DatabaseService().database;
+        await database.rawQuery("""
       DELETE FROM $tableName WHERE $primaryKey = '$patientId'
       """);
+      }, token);
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
@@ -153,12 +178,15 @@ class PatientDB {
       {required String patientId,
       required Map<String, dynamic> updatedData}) async {
     try {
-      final database = await DatabaseService().database;
-      await database.update(
-        tableName,
-        updatedData,
-        conflictAlgorithm: ConflictAlgorithm.rollback,
-      );
+      await compute((dynamic token) async {
+        BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+        final database = await DatabaseService().database;
+        await database.update(
+          tableName,
+          updatedData,
+          conflictAlgorithm: ConflictAlgorithm.rollback,
+        );
+      }, token);
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());

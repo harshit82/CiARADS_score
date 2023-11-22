@@ -1,3 +1,4 @@
+import 'package:CiARADS/bluetooth/bluetooth.dart';
 import 'package:CiARADS/camera/camera.dart';
 import 'package:CiARADS/constants/routes.dart';
 import 'package:CiARADS/view_model/view_model.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
           enterPatientDetails: (context) => const EnterPatientDetails(),
           enterDiagnosticData: (context) => const DiagnosticData(patientId: ''),
           tableFunctions: (context) => const TableFunctions(),
+          bluetooth: (context) => const Bluetooth(),
         },
       ),
     );

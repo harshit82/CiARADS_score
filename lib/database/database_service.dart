@@ -36,7 +36,7 @@ class DatabaseService {
   }
 
   Future<void> createDB(sql.Database database, int version) async {
-    await PatientDB().createTable(database);
+    await PatientTable().createTable(database);
   }
 
   Future<void> deleteDB(String databasePath) async {
