@@ -19,8 +19,4 @@ Errors:
 - FileSystemException (FileSystemException: Cannot copy file to '#gsri%green_filter|18:6:50.jpg', path = '/data/user/0/com.example.calposcopy/cache/CAP181698039984606454.jpg' (OS Error: Read-only file system, errno = 30))
 - https://stackoverflow.com/questions/75265972/task-appcheckdebugduplicateclasses-failed
 - https://stackoverflow.com/questions/75950122/flutter-isolates-the-backgroundisolatebinarymessenger-instance-value-is-invalid
-
-Bug:
-- https://github.com/flutter/flutter/issues/21911
-- https://github.com/flutter/flutter/issues/19644
-- https://stackoverflow.com/questions/12067180/why-is-the-physical-keyboard-not-working-in-my-android-app
+- https://github.com/flutter/flutter/issues/138327
