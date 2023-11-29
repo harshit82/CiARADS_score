@@ -36,20 +36,10 @@ class DatabaseService {
   }
 
   Future<void> createDB(sql.Database database, int version) async {
-    await PatientTable().createTable(database);
+    await PatientTable.createTable(database);
   }
 
   Future<void> deleteDB(String databasePath) async {
     await sql.deleteDatabase(databasePath);
   }
-
-  // Future<Uint8List> loadImage(String image) async {
-  //   final path = await fullPath;
-  //   sql.Database db = await sql.openDatabase(path);
-  //   List<Map<String, dynamic>> rows =
-  //       await db.rawQuery('SELECT $image FROM $tableName');
-  //   String base64Image = rows[0][image];
-  //   await db.close();
-  //   return base64Decode(base64Image);
-  // }
 }

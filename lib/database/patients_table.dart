@@ -7,19 +7,19 @@ import 'package:sqflite/sqflite.dart' as sql;
 import 'package:sqflite/sqlite_api.dart';
 
 class PatientTable {
-  final token = RootIsolateToken.instance;
-  Future<void> createTable(sql.Database database) async {
+  static final token = RootIsolateToken.instance;
+  static Future<void> createTable(sql.Database database) async {
     try {
       await compute((dynamic token) async {
         BackgroundIsolateBinaryMessenger.ensureInitialized(token);
         database.execute("""
-          CREATE TABLE $tableName(
+          CREATE TABLE IF NOT EXISTS $tableName(
           $patientId TEXT PRIMARY KEY, 
           $patientName TEXT NOT NULL, 
           $patientAge INTEGER NOT NULL, 
           $doctorName TEXT NOT NULL, 
           $hospitalName TEXT NOT NULL,
-          $marginAndSurface INTEGER,C
+          $marginAndSurface INTEGER,
           $vessel INTEGER,
           $lesionSize INTEGER,
           $aceticAcid INTEGER,
@@ -43,7 +43,7 @@ class PatientTable {
     }
   }
 
-  Future<void> deleteTable() async {
+  static Future<void> deleteTable() async {
     try {
       await compute((dynamic token) async {
         BackgroundIsolateBinaryMessenger.ensureInitialized(token);
@@ -59,7 +59,7 @@ class PatientTable {
     }
   }
 
-  Future<void> addPatientData(
+  static Future<void> addPatientData(
       {required Map<String, dynamic> patientData}) async {
     try {
       await compute((dynamic token) async {
@@ -74,7 +74,7 @@ class PatientTable {
     }
   }
 
-  Future<void> addDiagnosisData(
+  static Future<void> addDiagnosisData(
       {required String patientId,
       required Map<String, dynamic> diagnosisData}) async {
     List<dynamic> dataList = [];
@@ -109,7 +109,7 @@ class PatientTable {
     }
   }
 
-  Future<void> addImagesPaths(
+  static Future<void> addImagesPaths(
       {required String patientId,
       required Map<String, dynamic> imagePaths}) async {
     // Sorting the keys and the corresponding data in ascending order
@@ -147,7 +147,7 @@ class PatientTable {
   }
 
   // @dev
-  Future<void> seeTable() async {
+  static Future<void> seeTable() async {
     await compute((dynamic token) async {
       BackgroundIsolateBinaryMessenger.ensureInitialized(token);
       final database = await DatabaseService().database;
@@ -158,7 +158,7 @@ class PatientTable {
     }, token);
   }
 
-  Future<void> removePatientData({required String patientId}) async {
+  static Future<void> removePatientData({required String patientId}) async {
     try {
       await compute((dynamic token) async {
         BackgroundIsolateBinaryMessenger.ensureInitialized(token);
@@ -174,7 +174,7 @@ class PatientTable {
     }
   }
 
-  Future<void> updatePatientData(
+  static Future<void> updatePatientData(
       {required String patientId,
       required Map<String, dynamic> updatedData}) async {
     try {

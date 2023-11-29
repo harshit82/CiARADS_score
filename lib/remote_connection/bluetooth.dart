@@ -55,8 +55,11 @@ class _BluetoothState extends State<Bluetooth> {
     // If the bluetooth of the device is not enabled,
     // then request permission to turn on bluetooth
     // as the app starts up
-    enableBluetooth();
+    _enableBluetooth();
+    _stateChangeListener();
+  }
 
+  _stateChangeListener() {
     // Listen for further state changes
     _bluetooth.onStateChanged().listen((BluetoothState state) {
       setState(() {
@@ -64,7 +67,6 @@ class _BluetoothState extends State<Bluetooth> {
         if (_bluetoothState == BluetoothState.STATE_OFF) {
           _isButtonUnavailable = true;
         }
-        getPairedDevices();
       });
     });
   }
@@ -81,7 +83,7 @@ class _BluetoothState extends State<Bluetooth> {
     super.dispose();
   }
 
-  Future<bool> enableBluetooth() async {
+  Future<bool> _enableBluetooth() async {
     // Retrieving the current Bluetooth state
     _bluetoothState = await _bluetooth.state;
 

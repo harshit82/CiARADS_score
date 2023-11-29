@@ -45,4 +45,3 @@ app.*.map.json
 
 # dev added
 TODO.md
-db_isolate.dart

@@ -55,14 +55,16 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
 
   /// {@_initCamera} initializes the camera for use
   Future<void> _initCamera() async {
-    // // camera permission handling
+    // camera permission handling
     PermissionStatus status = await Permission.camera.status;
     if (!status.isGranted) {
       await Permission.camera.request();
     } else if (!status.isPermanentlyDenied) {
       Permission.camera.onPermanentlyDeniedCallback(() {
         ErrorWidget("Permanently Denied Camera Access");
-        print("Permanently Denied Camera Access");
+        if (kDebugMode) {
+          print("Permanently Denied Camera Access");
+        }
       });
     }
     // setting the camera controller to the default back camera

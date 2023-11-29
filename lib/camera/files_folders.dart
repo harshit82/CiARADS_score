@@ -9,8 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart';
 
 class FilesFolders {
-  // The return type is actually Future<String>
-  Future<void> createFolder(String folderName) async {
+  Future<String> createFolder(String folderName) async {
     final dir = Directory(
         '${(Platform.isAndroid ? await getExternalStorageDirectory() //FOR ANDROID
                 : await getApplicationSupportDirectory() //FOR IOS
@@ -22,22 +21,19 @@ class FilesFolders {
       await Permission.storage.request();
     }
 
-    if (await dir.exists()) {
-      Global.patientFolderPath = dir.path;
-      if (kDebugMode) {
-        print("Directory path = ${Global.patientFolderPath}");
-      }
-    } else {
+    if (!await dir.exists()) {
       dir.create();
-      Global.patientFolderPath = dir.path;
-      if (kDebugMode) {
-        print("Directory path = ${Global.patientFolderPath}");
-      }
     }
+
+    if (kDebugMode) {
+      print("Directory path = ${dir.path}");
+    }
+
+    return dir.path;
   }
 
   void saveToFolder(XFile image, String imageName) async {
-    String newPath = join(Global.patientFolderPath, imageName);
+    String newPath = join(await Global().patientFolderPath, imageName);
     Uint8List bytes = await image.readAsBytes();
     File imageFile = File(newPath);
     File newImage = await imageFile.writeAsBytes(bytes);
@@ -80,7 +76,7 @@ class FilesFolders {
   }
 
   void saveImagePathsToDB(String patientId) async {
-    await PatientTable()
-        .addImagesPaths(patientId: patientId, imagePaths: Global.imagePaths);
+    await PatientTable.addImagesPaths(
+        patientId: patientId, imagePaths: Global.imagePaths);
   }
 }

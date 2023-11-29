@@ -7,6 +7,8 @@ Learnings:
 - Implemented MVVM design pattern
 - https://stackoverflow.com/questions/75026752/how-do-i-solve-split-second-flutter-late-initialization-camera-error-in-async-fu
 - Created folder and save images in those folders
+- Added bluetooth functionality
+- Used web sockets for remote communication
 
 Errors:
 - Another exception was thrown: type 'String' is not a subtype of type 'int' in type cast

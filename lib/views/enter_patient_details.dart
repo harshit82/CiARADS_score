@@ -1,12 +1,11 @@
 import 'package:CiARADS/constants/constants_export.dart';
+import 'package:CiARADS/global.dart';
 import 'package:CiARADS/views/diagnostic_data.dart';
 import 'package:CiARADS/views/widgets/credits.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:CiARADS/database/database_export.dart';
-
-import '../camera/files_folders.dart';
 
 class EnterPatientDetails extends StatefulWidget {
   const EnterPatientDetails({super.key});
@@ -107,7 +106,7 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
       print(patientDataMap);
     }
 
-    PatientTable().addPatientData(patientData: patientDataMap);
+    PatientTable.addPatientData(patientData: patientDataMap);
   }
 
   @override
@@ -243,8 +242,11 @@ class _EnterPatientDetailsState extends State<EnterPatientDetails> {
                                 _saveToDB();
 
                                 // Creating folder using the name and the id of the patient
-                                FilesFolders().createFolder(
-                                    "${patientIdController.text}_${patientNameController.text}");
+                                String folderName =
+                                    "${patientIdController.text}_${patientNameController.text}";
+
+                                Global().setFolderName(folderName);
+                                Global.patientId = patientIdController.text;
                               });
 
                               Navigator.of(context).pushReplacement(
