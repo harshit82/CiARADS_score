@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:CiARADS/camera/camera.dart';
 import 'package:CiARADS/global.dart';
 import 'package:CiARADS/main.dart';
+import 'package:CiARADS/remote_connection/socket_keys.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -16,38 +18,50 @@ class WebSocket extends StatefulWidget {
 class _WebSocketState extends State<WebSocket> {
   WebSocketChannel? channel;
   String message = '';
+  final streamController = StreamController.broadcast();
 
   @override
   void initState() {
     super.initState();
-    channel = IOWebSocketChannel.connect('ws://your_websocket_server_address');
+    channel = IOWebSocketChannel.connect(socketServerAddress);
     channel?.stream.listen(_onMessage);
+  }
+
+  @override
+  void dispose() {
+    channel?.sink.close();
+    streamController.close();
+    super.dispose();
   }
 
   void _onMessage(dynamic data) {
     // Handle incoming WebSocket messages
     setState(() {
       message = data;
+      if (kDebugMode) {
+        print("Socket messages =");
+        print(message);
+      }
+      if (message == openCameraKey) {
+        _openCamera();
+        // TODO: Fix
+        streamController.sink.add(message);
+      }
     });
-
-    // Check if the message is "CAPTURE"
-    if (message == 'CAPTURE') {
-      takePicture();
-    }
   }
 
-  // Example function to simulate capturing a picture
-  void takePicture() {
+  void _openCamera() {
     if (kDebugMode) {
-      print('Taking a picture...');
+      print('Opening camera...');
     }
-    // logic to capture a photo
+    // open camera
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CameraApp(
           id: Global.patientId,
           test: Global.testName,
           cameras: cameras,
+          stream: streamController.stream,
         ),
       ),
     );
@@ -62,17 +76,11 @@ class _WebSocketState extends State<WebSocket> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             Text('Received Message: $message'),
           ],
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    channel?.sink.close();
-    super.dispose();
   }
 }

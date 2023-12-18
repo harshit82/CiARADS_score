@@ -1,4 +1,5 @@
 import 'package:CiARADS/constants/constants_export.dart';
+import 'package:CiARADS/remote_connection/web_sockets.dart';
 import 'package:CiARADS/view_model/view_model.dart';
 import 'package:CiARADS/views/patient_view.dart';
 import 'package:CiARADS/views/views_export.dart';
@@ -46,6 +47,10 @@ class _HomeState extends State<Home> {
           title: const Text("CiARADS score"),
           actions: [
             IconButton(
+                onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const WebSocket())),
+                icon: const Icon(Icons.device_unknown)),
+            IconButton(
                 onPressed: () => Navigator.of(context).pushNamed(bluetooth),
                 icon: const Icon(Icons.bluetooth)),
             IconButton(
@@ -63,7 +68,6 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 200,
                   color: Colors.transparent,
                   child: Column(
                     children: [
@@ -83,8 +87,8 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      const Expanded(
-                          child: Center(child: Text(applicationDescription))),
+                      const Text(applicationDescription),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -142,32 +146,50 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   onPressed: isButtonActive
-                      ? () {
-                          setState(
-                            () {
-                              isButtonActive = false;
+                      ? () async {
+                          viewModel.setId(patientIdController.text);
+                          await viewModel.getData();
 
-                              viewModel.setId(patientIdController.text);
-                              viewModel.getData();
+                          viewModel.loading
+                              ? const CircularProgressIndicator()
+                              : (
+                                  viewModel.patientModel != null
+                                      ? {
+                                          WidgetsBinding.instance
+                                              .addPostFrameCallback(
+                                            (_) {
+                                              var patient =
+                                                  viewModel.patientModel;
 
-                              var patient = viewModel.patientModel;
-
-                              if (patient != null) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        PatientView(patient: patient),
-                                  ),
+                                              /// @dev setting the model to null so that the patient not found condition can be achieved
+                                              viewModel.setPatientModel(null);
+                                              // navigating to [patient view]
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PatientView(
+                                                          patient: patient),
+                                                ),
+                                              );
+                                            },
+                                          )
+                                        }
+                                      : {
+                                          isButtonActive = false,
+                                          patientIdController.clear(),
+                                          WidgetsBinding.instance
+                                              .addPostFrameCallback(
+                                            (_) {
+                                              /// showing alert dialog when patient not found
+                                              showAlertDialog(
+                                                context: context,
+                                                title: "Patient not found",
+                                                description: "",
+                                              );
+                                            },
+                                          ),
+                                        },
                                 );
-                              } else {
-                                showAlertDialog(
-                                    context: context,
-                                    title: "Patient not found",
-                                    description: "");
-                              }
-                              patientIdController.clear();
-                            },
-                          );
                         }
                       : null,
                   child: const Text("Search"),

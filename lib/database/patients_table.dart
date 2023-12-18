@@ -3,17 +3,16 @@ import 'package:CiARADS/database/database_export.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:sqflite/sqflite.dart' as sql;
-import 'package:sqflite/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class PatientTable {
   static final token = RootIsolateToken.instance;
-  static Future<void> createTable(sql.Database database) async {
+  static Future<void> createTable(Database database) async {
     try {
       await compute((dynamic token) async {
         BackgroundIsolateBinaryMessenger.ensureInitialized(token);
-        database.execute("""
-          CREATE TABLE IF NOT EXISTS $tableName(
+        await database.execute("""
+          CREATE TABLE $tableName(
           $patientId TEXT PRIMARY KEY, 
           $patientName TEXT NOT NULL, 
           $patientAge INTEGER NOT NULL, 
@@ -184,7 +183,7 @@ class PatientTable {
         await database.update(
           tableName,
           updatedData,
-          conflictAlgorithm: ConflictAlgorithm.rollback,
+          conflictAlgorithm: ConflictAlgorithm.replace,
         );
       }, token);
     } catch (e) {

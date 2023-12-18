@@ -32,7 +32,8 @@ class FilesFolders {
     return dir.path;
   }
 
-  void saveToFolder(XFile image, String imageName) async {
+  /// @func{saveImageToFolder} saves the image captured from the camera to the destination in the device memory
+  void saveImageToFolder(XFile image, String imageName) async {
     String newPath = join(await Global().patientFolderPath, imageName);
     Uint8List bytes = await image.readAsBytes();
     File imageFile = File(newPath);
@@ -44,7 +45,7 @@ class FilesFolders {
   }
 
   /// @func{_fillMap} is used to fill the map containing image paths with the correct key
-  /// the function provides the correct key to the {@map imagePaths} based on the {@var testName}
+  /// the function provides the correct key to the @map{imagePaths} based on the @var{testName}
   void _fillMap(String imagePath) {
     if (kDebugMode) {
       print("Populating map");

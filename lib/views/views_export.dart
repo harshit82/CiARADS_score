@@ -5,3 +5,4 @@ export './home.dart';
 export './widgets/credits.dart';
 export './widgets/dropdown_menu.dart';
 export './table_functions.dart';
+export './widgets/image_preview.dart';

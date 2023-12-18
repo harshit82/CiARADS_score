@@ -22,3 +22,4 @@ Errors:
 - https://stackoverflow.com/questions/75265972/task-appcheckdebugduplicateclasses-failed
 - https://stackoverflow.com/questions/75950122/flutter-isolates-the-backgroundisolatebinarymessenger-instance-value-is-invalid
 - https://github.com/flutter/flutter/issues/138327
+- [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: DatabaseException(no such table: patients (code 1 SQLITE_ERROR): , while compiling: SELECT * FROM patients) sql 'SELECT * FROM patients' args []

@@ -40,7 +40,7 @@ class ViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getData() async {
+  Future<void> getData() async {
     setLoading(true);
 
     if (id == '') {
@@ -65,6 +65,7 @@ class ViewModel extends ChangeNotifier {
       if (kDebugMode) {
         print("Id for searching = $id");
       }
+
       Map<String, dynamic> dataMap =
           await PatientTable.getPatientData(patientId: id);
 
@@ -73,8 +74,10 @@ class ViewModel extends ChangeNotifier {
         print(dataMap);
       }
 
-      Patient? patient = Patient.fromMap(dataMap);
-      setPatientModel(patient);
+      if (dataMap.isNotEmpty) {
+        Patient? patient = Patient.fromMap(dataMap);
+        setPatientModel(patient);
+      }
     }
 
     setLoading(false);

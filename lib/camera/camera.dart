@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:CiARADS/remote_connection/socket_keys.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +12,7 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:CiARADS/camera/files_folders.dart';
 
 class CameraApp extends StatefulWidget {
+  final Stream stream;
   final String id;
   final String test;
   final List<CameraDescription> cameras;
@@ -18,6 +21,7 @@ class CameraApp extends StatefulWidget {
     required this.id,
     required this.test,
     required this.cameras,
+    required this.stream,
   }) : super(key: key);
 
   @override
@@ -40,6 +44,8 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
   // to check if the camera controller is initialized
   bool _isReady = false;
+
+  StreamSubscription? streamSubscription;
 
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
@@ -120,6 +126,26 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
 
     /// invoking the {@_initCamera} function in the initState
     _initCamera();
+
+    /// listening to the stream
+    streamSubscription = widget.stream.listen(trigger);
+  }
+
+  /// @func{trigger} triggers the appropriate function based on the @type{String} event
+  void trigger(dynamic event) {
+    if (kDebugMode) {
+      print("Camera event = ");
+      print(event);
+    }
+    if (event == captureImageKey) {
+      setState(() {
+        captureImage();
+      });
+    } else if (event == flashLightKey) {
+      setState(() {
+        toggleFlashLight();
+      });
+    }
   }
 
   /// {@captureImage} captures the image
@@ -135,22 +161,9 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
 
       // invoking the {@takePicture} function defined under the controller of the camera package to capture the image
       capturedImage = await _cameraController?.takePicture();
-      // using audio player to play the shutter sound on taking a picture
-      audioPlayer.open(Audio('sound/camera_shutter.mp3'));
-      audioPlayer.play();
-
-      String imagePath = capturedImage!.path;
-      Fluttertoast.showToast(msg: 'Saved image');
-
-      if (kDebugMode) {
-        print('Photo captured and saved');
-      }
-
-      // image name is a combination of patient_id and patient_name with the current date and time
-      String imageName =
-          "#${widget.id}%${widget.test}|${DateTime.now()}.${imagePath.split('.').last}";
-
-      FilesFolders().saveToFolder(capturedImage!, imageName);
+      _playCaptureSound();
+      _saveImage();
+      //_exitCamera();
     } catch (e) {
       if (kDebugMode) {
         print("Error: ${e.toString()}");
@@ -162,8 +175,38 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
     }
   }
 
-  /// {@_toggleFlashLight} turn on/off the flash light
-  void _toggleFlashLight() {
+  void _saveImage() {
+    String imagePath = capturedImage!.path;
+    Fluttertoast.showToast(msg: 'Saved image');
+
+    if (kDebugMode) {
+      print('Photo captured and saved');
+    }
+
+    // image name is a combination of patient_id and patient_name with the current date and time
+    String imageName =
+        "#${widget.id}%${widget.test}|${DateTime.now()}.${imagePath.split('.').last}";
+    // saving image to folder
+    FilesFolders().saveImageToFolder(capturedImage!, imageName);
+  }
+
+  void _playCaptureSound() {
+    // using audio player to play the shutter sound on taking a picture
+    audioPlayer.open(Audio('sound/camera_shutter.mp3'));
+    audioPlayer.play();
+  }
+
+  /// exit the camera automatically after a few seconds
+  void _exitCamera() {
+    Future.delayed(const Duration(minutes: 1));
+
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
+  }
+
+  /// {@toggleFlashLight} turn on/off the flash light
+  void toggleFlashLight() {
     if (_isFlashOn == true) {
       _cameraController?.setFlashMode(FlashMode.off);
       setState(() {
@@ -214,6 +257,7 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
   void dispose() {
     _cameraController?.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    streamSubscription?.cancel();
     super.dispose();
   }
 
@@ -241,7 +285,7 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
                       Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: GestureDetector(
-                          onTap: () => _toggleFlashLight(),
+                          onTap: () => toggleFlashLight(),
                           child: _isFlashOn == false
                               ? const Icon(
                                   Icons.flash_off,
@@ -321,7 +365,9 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          // {@feature} Add functionality to open image preview
+                        },
                         child: capturedImage == null
                             ? Container(
                                 height: 60,

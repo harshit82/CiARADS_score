@@ -1,6 +1,7 @@
-import 'package:CiARADS/remote_connection/bluetooth.dart';
+import 'dart:async';
 import 'package:CiARADS/camera/camera.dart';
 import 'package:CiARADS/constants/routes.dart';
+import 'package:CiARADS/remote_connection/bluetooth/selection.dart';
 import 'package:CiARADS/remote_connection/web_sockets.dart';
 import 'package:CiARADS/view_model/view_model.dart';
 import 'package:CiARADS/views/views_export.dart';
@@ -41,11 +42,12 @@ class MyApp extends StatelessWidget {
                 id: '',
                 test: '',
                 cameras: cameras,
+                stream: StreamController.broadcast().stream,
               ),
           enterPatientDetails: (context) => const EnterPatientDetails(),
           enterDiagnosticData: (context) => const DiagnosticData(patientId: ''),
           tableFunctions: (context) => const TableFunctions(),
-          bluetooth: (context) => const Bluetooth(),
+          bluetooth: (context) => const Selection(),
           webSockets: (context) => const WebSocket(),
         },
       ),

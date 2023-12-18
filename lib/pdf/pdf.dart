@@ -7,7 +7,7 @@ import 'package:path/path.dart';
 import 'package:pdf/widgets.dart';
 
 class PdfApi {
-  static Future<File> generatePdf(Patient patient) async {
+  static Future<File> generatePdf(Patient? patient) async {
     Document pdf = Document();
 
     Page page1 = Page(
@@ -21,7 +21,7 @@ class PdfApi {
                   children: [
                     TableRow(children: [
                       Text("Patient name:"),
-                      Text(patient.patient_name.toString())
+                      Text(patient!.patient_name.toString())
                     ]),
                     TableRow(children: [
                       Text("Patient age:"),
@@ -77,7 +77,7 @@ class PdfApi {
     );
 
     final aceticAcidImage = MemoryImage(
-        File(patient.acetic_acid_img_path.toString()).readAsBytesSync());
+        File(patient!.acetic_acid_img_path.toString()).readAsBytesSync());
     final lugolAcidImage = MemoryImage(
         File(patient.lugol_iodine_img_path.toString()).readAsBytesSync());
     final greenFilterImage = MemoryImage(

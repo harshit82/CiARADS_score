@@ -1,8 +1,7 @@
-import 'dart:io';
 import 'package:CiARADS/database/database_export.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart' as sql;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' as sql;
 
 class DatabaseService {
   DatabaseService._privateConstructor();
@@ -23,7 +22,7 @@ class DatabaseService {
   }
 
   Future<String> get fullPath async {
-    final Directory docDirectory = await getApplicationDocumentsDirectory();
+    final docDirectory = await getApplicationDocumentsDirectory();
     String path = join(docDirectory.path, databaseName);
     return path;
   }

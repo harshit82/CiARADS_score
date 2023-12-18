@@ -1,14 +1,16 @@
+import 'dart:async';
+import 'package:CiARADS/views/widgets/image_preview.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:CiARADS/camera/camera.dart';
 import 'package:CiARADS/camera/files_folders.dart';
 import 'package:CiARADS/constants/routes.dart';
+import 'package:CiARADS/database/database_export.dart';
 import 'package:CiARADS/global.dart';
 import 'package:CiARADS/main.dart';
 import 'package:CiARADS/views/widgets/credits.dart';
 import 'package:CiARADS/views/widgets/dropdown_menu.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:CiARADS/database/database_export.dart';
 
 class DiagnosticData extends StatefulWidget {
   final String patientId;
@@ -22,6 +24,8 @@ class DiagnosticData extends StatefulWidget {
 }
 
 class _DiagnosticDataState extends State<DiagnosticData> {
+  final streamController = StreamController.broadcast();
+
   bool isLugolIodineFilled = true;
   bool isNormalSalineFilled = true;
   bool isGreenFilterFilled = true;
@@ -90,7 +94,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
   @override
   void dispose() {
     super.dispose();
-
+    streamController.close();
     marginAndSurfaceController.dispose();
     vesselController.dispose();
     lesionSizeController.dispose();
@@ -125,8 +129,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
 
   @override
   Widget build(BuildContext context) {
-    // patient id
-    String pid = widget.patientId;
+    // TODO: Use the @map[imagePaths] to get the image locations and use them to show preview as done in camera
 
     return SafeArea(
       child: Scaffold(
@@ -146,23 +149,30 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                       "Click to capture images:\n",
                       style: TextStyle(fontSize: 20),
                     ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.center,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
                             onPressed: isGreenFilterFilled
                                 ? () {
                                     Global.testName = greenFilter;
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => CameraApp(
-                                                  cameras: cameras,
-                                                  id: pid,
-                                                  test: greenFilter,
-                                                )));
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => CameraApp(
+                                          cameras: cameras,
+                                          id: widget.patientId,
+                                          test: greenFilter,
+                                          stream: streamController.stream,
+                                        ),
+                                      ),
+                                    );
                                   }
                                 : null,
                             child: const Text("Green Filter")),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const ImagePreview(imagePath: greenFilterImagesPath),
                         const SizedBox(
                           width: 10,
                         ),
@@ -170,35 +180,52 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                             onPressed: isAceticAcidFilled
                                 ? () {
                                     Global.testName = aceticAcid;
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => CameraApp(
-                                                  cameras: cameras,
-                                                  id: pid,
-                                                  test: aceticAcid,
-                                                )));
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => CameraApp(
+                                          cameras: cameras,
+                                          id: widget.patientId,
+                                          test: aceticAcid,
+                                          stream: streamController.stream,
+                                        ),
+                                      ),
+                                    );
                                   }
                                 : null,
                             child: const Text("Acetic acid")),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const ImagePreview(imagePath: aceticAcidImagesPath),
                       ],
                     ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.center,
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
                             onPressed: isLugolIodineFilled
                                 ? () {
                                     Global.testName = lugolIodine;
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => CameraApp(
-                                                  id: pid,
-                                                  test: lugolIodine,
-                                                  cameras: cameras,
-                                                )));
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => CameraApp(
+                                          id: widget.patientId,
+                                          test: lugolIodine,
+                                          cameras: cameras,
+                                          stream: streamController.stream,
+                                        ),
+                                      ),
+                                    );
                                   }
                                 : null,
                             child: const Text("Lugol Iodine")),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const ImagePreview(imagePath: lugolIodineImagesPath),
                         const SizedBox(
                           width: 10,
                         ),
@@ -206,16 +233,23 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                             onPressed: isNormalSalineFilled
                                 ? () {
                                     Global.testName = normalSaline;
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => CameraApp(
-                                                  id: pid,
-                                                  test: normalSaline,
-                                                  cameras: cameras,
-                                                )));
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => CameraApp(
+                                          id: widget.patientId,
+                                          test: normalSaline,
+                                          cameras: cameras,
+                                          stream: streamController.stream,
+                                        ),
+                                      ),
+                                    );
                                   }
                                 : null,
                             child: const Text("Normal Saline")),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const ImagePreview(imagePath: normalSalineImagesPath),
                       ],
                     ),
                     const SizedBox(
@@ -299,6 +333,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                         const Text("Total Score: "),
                         const SizedBox(height: 5),
                         TextFormField(
+                          // TODO: Disable it till all values are not filled
                           onChanged: (value) {
                             setState(() {});
                           },
