@@ -2,7 +2,7 @@ import 'package:CiARADS/camera/files_folders.dart';
 
 class Global {
   static String _patientFolderPath = "";
-  static Map<String, dynamic> imagePaths = {};
+  static final Map<String, dynamic> _imagePaths = {};
   static String testName = "";
   static String _patientFolderName = "";
   static String _imageFolderPath = "";
@@ -26,5 +26,11 @@ class Global {
 
   void setFolderName(String name) {
     _patientFolderName = name;
+  }
+
+  Map<String, dynamic> get imagePaths => _imagePaths;
+
+  void setImagePaths(String key, String path) {
+    _imagePaths.addAll({key: path});
   }
 }

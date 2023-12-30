@@ -1,5 +1,4 @@
 import 'package:CiARADS/constants/constants_export.dart';
-import 'package:CiARADS/remote_connection/web_sockets.dart';
 import 'package:CiARADS/view_model/view_model.dart';
 import 'package:CiARADS/views/patient_view.dart';
 import 'package:CiARADS/views/views_export.dart';
@@ -38,6 +37,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    /// provider instance
     ViewModel viewModel = context.watch<ViewModel>();
 
     return SafeArea(
@@ -46,10 +46,10 @@ class _HomeState extends State<Home> {
           centerTitle: true,
           title: const Text("CiARADS score"),
           actions: [
-            IconButton(
-                onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const WebSocket())),
-                icon: const Icon(Icons.device_unknown)),
+            // IconButton(
+            //     onPressed: () => Navigator.of(context).push(
+            //         MaterialPageRoute(builder: (context) => const WebSocket())),
+            //     icon: const Icon(Icons.device_unknown)),
             IconButton(
                 onPressed: () => Navigator.of(context).pushNamed(bluetooth),
                 icon: const Icon(Icons.bluetooth)),
@@ -147,7 +147,9 @@ class _HomeState extends State<Home> {
                   ),
                   onPressed: isButtonActive
                       ? () async {
+                          // setting the id
                           viewModel.setId(patientIdController.text);
+                          // setting the model with the fetched data
                           await viewModel.getData();
 
                           viewModel.loading
@@ -155,9 +157,15 @@ class _HomeState extends State<Home> {
                               : (
                                   viewModel.patientModel != null
                                       ? {
+                                          // deactivating the search button
+                                          isButtonActive = false,
+                                          // clearing the text field
+                                          patientIdController.clear(),
+
                                           WidgetsBinding.instance
                                               .addPostFrameCallback(
                                             (_) {
+                                              /// @dev storing the instance of model that is to be displayed before modifying model
                                               var patient =
                                                   viewModel.patientModel;
 
@@ -175,7 +183,9 @@ class _HomeState extends State<Home> {
                                           )
                                         }
                                       : {
+                                          // deactivating the search button
                                           isButtonActive = false,
+                                          // clearing the text field
                                           patientIdController.clear(),
                                           WidgetsBinding.instance
                                               .addPostFrameCallback(

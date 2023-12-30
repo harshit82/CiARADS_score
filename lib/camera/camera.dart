@@ -59,7 +59,7 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
     }
   }
 
-  /// {@_initCamera} initializes the camera for use
+  /// @func[_initCamera] initializes the camera for use
   Future<void> _initCamera() async {
     // camera permission handling
     PermissionStatus status = await Permission.camera.status;
@@ -73,10 +73,24 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
         }
       });
     }
-    // setting the camera controller to the default back camera
-    _cameraController = CameraController(
-        widget.cameras.first, ResolutionPreset.max,
-        enableAudio: false);
+
+    if (kDebugMode) {
+      print("List of available cameras = ${widget.cameras}");
+    }
+
+    if (widget.cameras.length <= 2) {
+      // setting the camera controller to the default back camera
+      _cameraController = CameraController(
+          widget.cameras.first, ResolutionPreset.max,
+          enableAudio: false);
+    } else {
+      // assuming the last camera is the external camera
+      // setting the camera controller to the external camera
+      _cameraController = CameraController(
+          widget.cameras.last, ResolutionPreset.max,
+          enableAudio: false);
+    }
+
     try {
       // checking if the controller has been initialized
       await _cameraController?.initialize().then((_) {
@@ -124,14 +138,14 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    /// invoking the {@_initCamera} function in the initState
+    /// invoking the @func[_initCamera] in the initState
     _initCamera();
 
     /// listening to the stream
     streamSubscription = widget.stream.listen(trigger);
   }
 
-  /// @func{trigger} triggers the appropriate function based on the @type{String} event
+  /// @func[trigger] triggers the appropriate function based on the @type{String} event
   void trigger(dynamic event) {
     if (kDebugMode) {
       print("Camera event = ");
