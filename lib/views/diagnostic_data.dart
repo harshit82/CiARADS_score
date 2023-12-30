@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:CiARADS/camera/usb_camera.dart';
 import 'package:CiARADS/views/widgets/image_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class _DiagnosticDataState extends State<DiagnosticData> {
   bool isGreenFilterFilled = true;
   bool isAceticAcidFilled = true;
 
+  /// checks is all fields are filled with values otherwise throws errors
   bool _checkForAllFilled() {
     if (isLugolIodineFilled == false ||
         isNormalSalineFilled == false ||
@@ -129,10 +131,14 @@ class _DiagnosticDataState extends State<DiagnosticData> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Use the @map[imagePaths] to get the image locations and use them to show preview as done in camera
-
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            UsbCamera.startCamera();
+          },
+          child: const Icon(Icons.switch_camera),
+        ),
         appBar: AppBar(
           centerTitle: true,
           title: const Text("Diagnostic Data"),
@@ -153,50 +159,46 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
-                            onPressed: isGreenFilterFilled
-                                ? () {
-                                    Global.testName = greenFilter;
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => CameraApp(
-                                          cameras: cameras,
-                                          id: widget.patientId,
-                                          test: greenFilter,
-                                          stream: streamController.stream,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                : null,
+                            onPressed: () {
+                              Global.testName = greenFilter;
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => CameraApp(
+                                    cameras: cameras,
+                                    id: widget.patientId,
+                                    test: greenFilter,
+                                    stream: streamController.stream,
+                                  ),
+                                ),
+                              );
+                            },
                             child: const Text("Green Filter")),
                         const SizedBox(
                           width: 10,
                         ),
-                        const ImagePreview(imagePath: greenFilterImagesPath),
+                        const ImagePreview(testName: greenFilterImagesPath),
                         const SizedBox(
                           width: 10,
                         ),
                         ElevatedButton(
-                            onPressed: isAceticAcidFilled
-                                ? () {
-                                    Global.testName = aceticAcid;
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => CameraApp(
-                                          cameras: cameras,
-                                          id: widget.patientId,
-                                          test: aceticAcid,
-                                          stream: streamController.stream,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                : null,
+                            onPressed: () {
+                              Global.testName = aceticAcid;
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => CameraApp(
+                                    cameras: cameras,
+                                    id: widget.patientId,
+                                    test: aceticAcid,
+                                    stream: streamController.stream,
+                                  ),
+                                ),
+                              );
+                            },
                             child: const Text("Acetic acid")),
                         const SizedBox(
                           width: 10,
                         ),
-                        const ImagePreview(imagePath: aceticAcidImagesPath),
+                        const ImagePreview(testName: aceticAcidImagesPath),
                       ],
                     ),
                     const SizedBox(
@@ -206,50 +208,46 @@ class _DiagnosticDataState extends State<DiagnosticData> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
-                            onPressed: isLugolIodineFilled
-                                ? () {
-                                    Global.testName = lugolIodine;
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => CameraApp(
-                                          id: widget.patientId,
-                                          test: lugolIodine,
-                                          cameras: cameras,
-                                          stream: streamController.stream,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                : null,
+                            onPressed: () {
+                              Global.testName = lugolIodine;
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => CameraApp(
+                                    id: widget.patientId,
+                                    test: lugolIodine,
+                                    cameras: cameras,
+                                    stream: streamController.stream,
+                                  ),
+                                ),
+                              );
+                            },
                             child: const Text("Lugol Iodine")),
                         const SizedBox(
                           width: 10,
                         ),
-                        const ImagePreview(imagePath: lugolIodineImagesPath),
+                        const ImagePreview(testName: lugolIodineImagesPath),
                         const SizedBox(
                           width: 10,
                         ),
                         ElevatedButton(
-                            onPressed: isNormalSalineFilled
-                                ? () {
-                                    Global.testName = normalSaline;
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => CameraApp(
-                                          id: widget.patientId,
-                                          test: normalSaline,
-                                          cameras: cameras,
-                                          stream: streamController.stream,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                : null,
+                            onPressed: () {
+                              Global.testName = normalSaline;
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => CameraApp(
+                                    id: widget.patientId,
+                                    test: normalSaline,
+                                    cameras: cameras,
+                                    stream: streamController.stream,
+                                  ),
+                                ),
+                              );
+                            },
                             child: const Text("Normal Saline")),
                         const SizedBox(
                           width: 10,
                         ),
-                        const ImagePreview(imagePath: normalSalineImagesPath),
+                        const ImagePreview(testName: normalSalineImagesPath),
                       ],
                     ),
                     const SizedBox(

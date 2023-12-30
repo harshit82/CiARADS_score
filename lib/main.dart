@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:CiARADS/camera/camera.dart';
 import 'package:CiARADS/constants/routes.dart';
-import 'package:CiARADS/remote_connection/bluetooth/selection.dart';
+import 'package:CiARADS/database/database_export.dart';
+import 'package:CiARADS/remote_connection/bluetooth/flutter_blue_app.dart';
 import 'package:CiARADS/remote_connection/web_sockets.dart';
 import 'package:CiARADS/view_model/view_model.dart';
 import 'package:CiARADS/views/views_export.dart';
@@ -13,6 +14,7 @@ late List<CameraDescription> cameras;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await PatientTable.createTable(await DatabaseService().database);
   cameras = await availableCameras();
   runApp(const MyApp());
 }
@@ -47,7 +49,7 @@ class MyApp extends StatelessWidget {
           enterPatientDetails: (context) => const EnterPatientDetails(),
           enterDiagnosticData: (context) => const DiagnosticData(patientId: ''),
           tableFunctions: (context) => const TableFunctions(),
-          bluetooth: (context) => const Selection(),
+          bluetooth: (context) => const FlutterBlueApp(),
           webSockets: (context) => const WebSocket(),
         },
       ),

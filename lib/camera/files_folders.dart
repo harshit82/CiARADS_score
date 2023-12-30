@@ -53,6 +53,10 @@ class FilesFolders {
 
     String key = "";
 
+    if (kDebugMode) {
+      print("Test: ${Global.testName}");
+    }
+
     switch (Global.testName) {
       case lugolIodine:
         key = lugolIodineImagesPath;
@@ -73,11 +77,11 @@ class FilesFolders {
         break;
     }
 
-    Global.imagePaths.addAll({key: imagePath});
+    Global().setImagePaths(key, imagePath);
   }
 
   void saveImagePathsToDB(String patientId) async {
     await PatientTable.addImagesPaths(
-        patientId: patientId, imagePaths: Global.imagePaths);
+        patientId: patientId, imagePaths: Global().imagePaths);
   }
 }

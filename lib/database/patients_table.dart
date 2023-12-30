@@ -9,10 +9,11 @@ class PatientTable {
   static final token = RootIsolateToken.instance;
   static Future<void> createTable(Database database) async {
     try {
-      await compute((dynamic token) async {
-        BackgroundIsolateBinaryMessenger.ensureInitialized(token);
-        await database.execute("""
-          CREATE TABLE $tableName(
+      await database.execute("""
+          DROP TABLE IF EXISTS $tableName;
+        """);
+      await database.execute("""
+          CREATE TABLE IF NOT EXISTS $tableName(
           $patientId TEXT PRIMARY KEY, 
           $patientName TEXT NOT NULL, 
           $patientAge INTEGER NOT NULL, 
@@ -32,8 +33,6 @@ class PatientTable {
           $aceticAcidImagesPath TEXT
           )
           """);
-      }, token);
-
       Fluttertoast.showToast(msg: "Creating table: $tableName");
     } catch (e) {
       if (kDebugMode) {
@@ -145,7 +144,7 @@ class PatientTable {
     }
   }
 
-  // @dev
+  /// @dev returns the table structure in debug mode terminal
   static Future<void> seeTable() async {
     await compute((dynamic token) async {
       BackgroundIsolateBinaryMessenger.ensureInitialized(token);
@@ -196,8 +195,9 @@ class PatientTable {
   static Future<Map<String, dynamic>> getPatientData(
       {required String patientId}) async {
     final database = await DatabaseService().database;
-    List<Map<String, dynamic>> patientData = await database
-        .rawQuery("SELECT * FROM $tableName WHERE $primaryKey = '$patientId' ");
+    List<Map<String, dynamic>> patientData = await database.rawQuery("""
+      SELECT * FROM $tableName WHERE $primaryKey = '$patientId' 
+    """);
     if (kDebugMode) {
       print(patientData);
     }
@@ -209,8 +209,9 @@ class PatientTable {
 
   static Future<List<Map<String, dynamic>>> getAllPatientData() async {
     final database = await DatabaseService().database;
-    List<Map<String, dynamic>> allPatients =
-        await database.rawQuery("SELECT * FROM $tableName");
+    List<Map<String, dynamic>> allPatients = await database.rawQuery("""
+          SELECT * FROM $tableName
+        """);
     if (kDebugMode) {
       print(allPatients);
     }
